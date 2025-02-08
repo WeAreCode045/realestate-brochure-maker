@@ -16,6 +16,7 @@ export interface PropertyData {
   sqft: string;
   description: string;
   images: File[];
+  floorplans: File[];
 }
 
 interface PropertyFormProps {
@@ -33,6 +34,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
     sqft: "",
     description: "",
     images: [],
+    floorplans: [],
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,15 +45,30 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newImages = Array.from(e.target.files);
-      if (newImages.length > 5) {
+      if (newImages.length > 10) {
         toast({
           title: "Te veel afbeeldingen",
-          description: "Selecteer maximaal 5 afbeeldingen",
+          description: "Selecteer maximaal 10 afbeeldingen",
           variant: "destructive",
         });
         return;
       }
       setFormData((prev) => ({ ...prev, images: newImages }));
+    }
+  };
+
+  const handleFloorplanUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFloorplans = Array.from(e.target.files);
+      if (newFloorplans.length > 3) {
+        toast({
+          title: "Te veel plattegronden",
+          description: "Selecteer maximaal 3 plattegronden",
+          variant: "destructive",
+        });
+        return;
+      }
+      setFormData((prev) => ({ ...prev, floorplans: newFloorplans }));
     }
   };
 
@@ -155,12 +172,26 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="images">Afbeeldingen (Max 5)</Label>
+            <Label htmlFor="images">Foto's (Max 10)</Label>
             <Input
               id="images"
               name="images"
               type="file"
               onChange={handleImageUpload}
+              className="mt-1"
+              accept="image/*"
+              multiple
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="floorplans">Plattegronden (Max 3)</Label>
+            <Input
+              id="floorplans"
+              name="floorplans"
+              type="file"
+              onChange={handleFloorplanUpload}
               className="mt-1"
               accept="image/*"
               multiple

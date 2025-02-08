@@ -5,7 +5,7 @@ import { BrochurePreview } from "@/components/BrochurePreview";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import 'jspdf-autotable';
 
 const Index = () => {
   const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
@@ -45,16 +45,16 @@ const Index = () => {
       ["Oppervlakte", `${propertyData.sqft} m²`],
     ];
 
-    autoTable(pdf, {
+    (pdf as any).autoTable({
       startY: 30,
       head: [["Kenmerk", "Details"]],
       body: tableData,
     });
 
     pdf.setFontSize(14);
-    pdf.text("Beschrijving", 20, pdf.autoTable.previous.finalY + 20);
+    pdf.text("Beschrijving", 20, (pdf as any).autoTable.previous.finalY + 20);
     const splitDescription = pdf.splitTextToSize(propertyData.description, pageWidth - 40);
-    pdf.text(splitDescription, 20, pdf.autoTable.previous.finalY + 30);
+    pdf.text(splitDescription, 20, (pdf as any).autoTable.previous.finalY + 30);
     pdf.addPage();
 
     // Photos page
@@ -74,12 +74,25 @@ const Index = () => {
       yPosition += 90;
     }
 
-    // Floor plans page (placeholder)
-    pdf.addPage();
-    pdf.setFontSize(20);
-    pdf.text("Plattegronden", 20, 20);
-    pdf.setFontSize(14);
-    pdf.text("Neem contact met ons op voor plattegronden.", 20, 40);
+    // Floor plans page
+    if (propertyData.floorplans.length > 0) {
+      pdf.addPage();
+      pdf.setFontSize(20);
+      pdf.text("Plattegronden", 20, 20);
+      yPosition = 40;
+
+      for (let i = 0; i < propertyData.floorplans.length; i++) {
+        if (yPosition + 80 > pageHeight) {
+          pdf.addPage();
+          yPosition = 40;
+        }
+
+        const floorplan = propertyData.floorplans[i];
+        const url = URL.createObjectURL(floorplan);
+        await pdf.addImage(url, "JPEG", 20, yPosition, 170, 80);
+        yPosition += 90;
+      }
+    }
 
     // Contact page
     pdf.addPage();
@@ -93,7 +106,7 @@ const Index = () => {
       ["Adres", "Makelaarsweg 1, 1234 AB Amsterdam"],
     ];
 
-    autoTable(pdf, {
+    (pdf as any).autoTable({
       startY: 30,
       head: [["", ""]],
       body: contactInfo,

@@ -41,16 +41,36 @@ export function BrochurePreview({ data }: BrochurePreviewProps) {
         </div>
 
         {data.images.length > 0 && (
-          <div className="grid grid-cols-2 gap-4">
-            {Array.from(data.images).map((image, index) => (
-              <div key={index} className="aspect-video relative overflow-hidden rounded-lg">
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt={`Woning afbeelding ${index + 1}`}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ))}
+          <div>
+            <h3 className="text-lg font-semibold text-estate-700 mb-2">Foto's</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {Array.from(data.images).map((image, index) => (
+                <div key={index} className="aspect-video relative overflow-hidden rounded-lg">
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Woning afbeelding ${index + 1}`}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {data.floorplans.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold text-estate-700 mb-2">Plattegronden</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {Array.from(data.floorplans).map((floorplan, index) => (
+                <div key={index} className="aspect-video relative overflow-hidden rounded-lg">
+                  <img
+                    src={URL.createObjectURL(floorplan)}
+                    alt={`Plattegrond ${index + 1}`}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
