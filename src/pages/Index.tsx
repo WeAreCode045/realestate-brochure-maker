@@ -4,6 +4,7 @@ import { PropertyForm, PropertyData } from "@/components/PropertyForm";
 import { BrochurePreview } from "@/components/BrochurePreview";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { Home, Car, Calendar, Ruler, Zap } from "lucide-react";
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 
@@ -35,43 +36,86 @@ const Index = () => {
 
     // General information page
     pdf.setFontSize(20);
-    pdf.text("Eigenschappen", 20, 20);
+    pdf.text("Kenmerken", 20, 20);
 
     const tableData = [
       ["Adres", propertyData.address],
       ["Prijs", propertyData.price],
+      ["Woonoppervlak", `${propertyData.livingArea} m²`],
+      ["Perceeloppervlakte", `${propertyData.sqft} m²`],
+      ["Bouwjaar", propertyData.buildYear],
       ["Slaapkamers", propertyData.bedrooms],
       ["Badkamers", propertyData.bathrooms],
-      ["Oppervlakte", `${propertyData.sqft} m²`],
+      ["Garages", propertyData.garages],
+      ["Energielabel", propertyData.energyLabel],
     ];
 
     (pdf as any).autoTable({
       startY: 30,
       head: [["Kenmerk", "Details"]],
       body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [64, 74, 8B] },
+      styles: { fontSize: 12 },
     });
+
+    if (propertyData.features.length > 0) {
+      pdf.text("Extra Kenmerken", 20, (pdf as any).autoTable.previous.finalY + 20);
+      const featuresList = propertyData.features.map(f => [f.description]);
+      (pdf as any).autoTable({
+        startY: (pdf as any).autoTable.previous.finalY + 30,
+        body: featuresList,
+        theme: 'plain',
+      });
+    }
 
     pdf.setFontSize(14);
     pdf.text("Beschrijving", 20, (pdf as any).autoTable.previous.finalY + 20);
     const splitDescription = pdf.splitTextToSize(propertyData.description, pageWidth - 40);
     pdf.text(splitDescription, 20, (pdf as any).autoTable.previous.finalY + 30);
-    pdf.addPage();
+
+    // Try to fetch and add the map image
+    try {
+      const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(
+        propertyData.address
+      )}&zoom=15&size=640x300&scale=2&maptype=roadmap&markers=color:red%7C${encodeURIComponent(
+        propertyData.address
+      )}&key=YOUR_GOOGLE_MAPS_API_KEY`;
+      
+      const mapResponse = await fetch(mapUrl);
+      const mapBlob = await mapResponse.blob();
+      const mapBase64 = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(mapBlob);
+      });
+
+      pdf.addPage();
+      pdf.setFontSize(20);
+      pdf.text("Locatie", 20, 20);
+      pdf.addImage(mapBase64 as string, "PNG", 20, 40, 170, 80);
+    } catch (error) {
+      console.error("Error loading map:", error);
+    }
 
     // Photos page
-    pdf.setFontSize(20);
-    pdf.text("Foto's", 20, 20);
-    let yPosition = 40;
+    if (propertyData.images.length > 0) {
+      pdf.addPage();
+      pdf.setFontSize(20);
+      pdf.text("Foto's", 20, 20);
+      let yPosition = 40;
 
-    for (let i = 0; i < propertyData.images.length; i++) {
-      if (yPosition + 80 > pageHeight) {
-        pdf.addPage();
-        yPosition = 40;
+      for (let i = 0; i < propertyData.images.length; i++) {
+        if (yPosition + 80 > pageHeight) {
+          pdf.addPage();
+          yPosition = 40;
+        }
+
+        const img = propertyData.images[i];
+        const url = URL.createObjectURL(img);
+        await pdf.addImage(url, "JPEG", 20, yPosition, 170, 80);
+        yPosition += 90;
       }
-
-      const img = propertyData.images[i];
-      const url = URL.createObjectURL(img);
-      await pdf.addImage(url, "JPEG", 20, yPosition, 170, 80);
-      yPosition += 90;
     }
 
     // Floor plans page
@@ -79,7 +123,7 @@ const Index = () => {
       pdf.addPage();
       pdf.setFontSize(20);
       pdf.text("Plattegronden", 20, 20);
-      yPosition = 40;
+      let yPosition = 40;
 
       for (let i = 0; i < propertyData.floorplans.length; i++) {
         if (yPosition + 80 > pageHeight) {
