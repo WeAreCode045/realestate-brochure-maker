@@ -14,8 +14,8 @@ const Index = () => {
   const handleFormSubmit = (data: PropertyData) => {
     setPropertyData(data);
     toast({
-      title: "Preview ready",
-      description: "Your brochure preview has been generated",
+      title: "Voorbeeld gereed",
+      description: "Uw brochure voorbeeld is gegenereerd",
     });
   };
 
@@ -26,37 +26,46 @@ const Index = () => {
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    // Title
+    // Cover page
     pdf.setFontSize(24);
-    pdf.text(propertyData.title, pageWidth / 2, 20, { align: "center" });
-
-    // Price
+    pdf.text(propertyData.title, pageWidth / 2, pageHeight / 3, { align: "center" });
     pdf.setFontSize(18);
-    pdf.text(propertyData.price, pageWidth / 2, 30, { align: "center" });
+    pdf.text(propertyData.price, pageWidth / 2, pageHeight / 3 + 10, { align: "center" });
+    pdf.addPage();
 
-    // Property Details Table
+    // General information page
+    pdf.setFontSize(20);
+    pdf.text("Eigenschappen", 20, 20);
+
+    const tableData = [
+      ["Adres", propertyData.address],
+      ["Prijs", propertyData.price],
+      ["Slaapkamers", propertyData.bedrooms],
+      ["Badkamers", propertyData.bathrooms],
+      ["Oppervlakte", `${propertyData.sqft} m²`],
+    ];
+
     autoTable(pdf, {
-      head: [["Feature", "Details"]],
-      body: [
-        ["Address", propertyData.address],
-        ["Bedrooms", propertyData.bedrooms],
-        ["Bathrooms", propertyData.bathrooms],
-        ["Square Footage", propertyData.sqft],
-      ],
-      startY: 40,
+      startY: 30,
+      head: [["Kenmerk", "Details"]],
+      body: tableData,
     });
 
-    // Description
-    pdf.setFontSize(12);
+    pdf.setFontSize(14);
+    pdf.text("Beschrijving", 20, pdf.autoTable.previous.finalY + 20);
     const splitDescription = pdf.splitTextToSize(propertyData.description, pageWidth - 40);
-    pdf.text(splitDescription, 20, pdf.lastAutoTable.finalY + 20);
+    pdf.text(splitDescription, 20, pdf.autoTable.previous.finalY + 30);
+    pdf.addPage();
 
-    // Images
-    let yPosition = pdf.lastAutoTable.finalY + 60;
+    // Photos page
+    pdf.setFontSize(20);
+    pdf.text("Foto's", 20, 20);
+    let yPosition = 40;
+
     for (let i = 0; i < propertyData.images.length; i++) {
       if (yPosition + 80 > pageHeight) {
         pdf.addPage();
-        yPosition = 20;
+        yPosition = 40;
       }
 
       const img = propertyData.images[i];
@@ -65,10 +74,36 @@ const Index = () => {
       yPosition += 90;
     }
 
-    pdf.save("property-brochure.pdf");
+    // Floor plans page (placeholder)
+    pdf.addPage();
+    pdf.setFontSize(20);
+    pdf.text("Plattegronden", 20, 20);
+    pdf.setFontSize(14);
+    pdf.text("Neem contact met ons op voor plattegronden.", 20, 40);
+
+    // Contact page
+    pdf.addPage();
+    pdf.setFontSize(20);
+    pdf.text("Contact Informatie", 20, 20);
+    
+    const contactInfo = [
+      ["Makelaar", "Uw Makelaar BV"],
+      ["Telefoon", "+31 (0)20 123 4567"],
+      ["Email", "info@uwmakelaar.nl"],
+      ["Adres", "Makelaarsweg 1, 1234 AB Amsterdam"],
+    ];
+
+    autoTable(pdf, {
+      startY: 30,
+      head: [["", ""]],
+      body: contactInfo,
+      theme: "plain",
+    });
+
+    pdf.save("woning-brochure.pdf");
     toast({
-      title: "Success",
-      description: "Your brochure has been downloaded",
+      title: "Succes",
+      description: "Uw brochure is gedownload",
     });
   };
 
@@ -76,8 +111,8 @@ const Index = () => {
     <div className="min-h-screen bg-estate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-estate-800 mb-4">Real Estate Brochure Maker</h1>
-          <p className="text-estate-600">Create professional property brochures in minutes</p>
+          <h1 className="text-4xl font-bold text-estate-800 mb-4">Woning Brochure Maker</h1>
+          <p className="text-estate-600">Maak professionele woningbrochures in enkele minuten</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">

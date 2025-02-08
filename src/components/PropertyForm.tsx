@@ -45,8 +45,8 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
       const newImages = Array.from(e.target.files);
       if (newImages.length > 5) {
         toast({
-          title: "Too many images",
-          description: "Please select a maximum of 5 images",
+          title: "Te veel afbeeldingen",
+          description: "Selecteer maximaal 5 afbeeldingen",
           variant: "destructive",
         });
         return;
@@ -65,7 +65,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <div>
-            <Label htmlFor="title">Property Title</Label>
+            <Label htmlFor="title">Titel Woning</Label>
             <Input
               id="title"
               name="title"
@@ -78,7 +78,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="price">Price</Label>
+              <Label htmlFor="price">Prijs</Label>
               <Input
                 id="price"
                 name="price"
@@ -90,7 +90,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
               />
             </div>
             <div>
-              <Label htmlFor="sqft">Square Footage</Label>
+              <Label htmlFor="sqft">Oppervlakte (m²)</Label>
               <Input
                 id="sqft"
                 name="sqft"
@@ -104,7 +104,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">Adres</Label>
             <Input
               id="address"
               name="address"
@@ -117,7 +117,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="bedrooms">Bedrooms</Label>
+              <Label htmlFor="bedrooms">Slaapkamers</Label>
               <Input
                 id="bedrooms"
                 name="bedrooms"
@@ -129,7 +129,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
               />
             </div>
             <div>
-              <Label htmlFor="bathrooms">Bathrooms</Label>
+              <Label htmlFor="bathrooms">Badkamers</Label>
               <Input
                 id="bathrooms"
                 name="bathrooms"
@@ -143,7 +143,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Beschrijving</Label>
             <Textarea
               id="description"
               name="description"
@@ -155,7 +155,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="images">Images (Max 5)</Label>
+            <Label htmlFor="images">Afbeeldingen (Max 5)</Label>
             <Input
               id="images"
               name="images"
@@ -170,7 +170,7 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
         </div>
 
         <Button type="submit" className="w-full">
-          Generate Brochure
+          Genereer Brochure
         </Button>
       </form>
     </Card>
