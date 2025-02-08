@@ -55,7 +55,7 @@ const Index = () => {
       head: [["Kenmerk", "Details"]],
       body: tableData,
       theme: 'grid',
-      headStyles: { fillColor: [64, 74, 8B] },
+      headStyles: { fillColor: [64, 74, 138] },
       styles: { fontSize: 12 },
     });
 
