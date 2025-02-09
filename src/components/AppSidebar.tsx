@@ -1,4 +1,4 @@
-
+// components/AppSidebar.tsx
 import { Home, Settings, Edit2, FileDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -16,6 +16,8 @@ import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { generatePropertyPDF } from '../utils/pdfGenerator';
+import { PropertyData } from './PropertyForm';
 
 const items = [
   {
@@ -57,11 +59,52 @@ export function AppSidebar() {
     });
   };
 
-  const handleGeneratePDF = () => {
-    toast({
-      title: "PDF Generatie",
-      description: "Uw brochure wordt gegenereerd",
-    });
+  const handleGeneratePDF = async (brochure: StoredPropertyData) => {
+    try {
+      toast({
+        title: "Genereren PDF",
+        description: "Even geduld, uw brochure wordt gegenereerd...",
+      });
+
+      // Convert stored data back to PropertyData format
+      const propertyData: PropertyData = {
+        ...brochure,
+        images: await Promise.all(
+          brochure.images.map(async (imageUrl) => {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            return new File([blob], 'image.jpg', { type: 'image/jpeg' });
+          })
+        ),
+        features: brochure.features || [],
+        floorplans: brochure.floorplans || []
+      };
+
+      // Generate PDF
+      const pdfBlob = await generatePropertyPDF(propertyData);
+
+      // Create download link
+      const url = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${brochure.title.replace(/\s+/g, '-')}-brochure.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "Brochure is succesvol gedownload",
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Error",
+        description: "Er is een fout opgetreden bij het genereren van de brochure",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -107,7 +150,7 @@ export function AppSidebar() {
                         <Button
                           variant="secondary"
                           size="sm"
-                          onClick={handleGeneratePDF}
+                          onClick={() => handleGeneratePDF(brochure)}
                         >
                           <FileDown className="w-4 h-4" />
                         </Button>
