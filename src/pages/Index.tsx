@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { PropertyForm, PropertyData } from "@/components/PropertyForm";
 import { BrochurePreview } from "@/components/BrochurePreview";
@@ -7,9 +8,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { X, Edit2, Save, FileDown } from "lucide-react";
 
+// Helper type to store image data
+interface StoredPropertyData extends Omit<PropertyData, 'images' | 'floorplans'> {
+  images: string[];
+  floorplans: string[];
+}
+
 const Index = () => {
   const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
-  const [savedBrochures, setSavedBrochures] = useState<PropertyData[]>([]);
+  const [savedBrochures, setSavedBrochures] = useState<StoredPropertyData[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const { toast } = useToast();
 
@@ -20,11 +27,38 @@ const Index = () => {
     }
   }, []);
 
-  const handleFormSubmit = (data: PropertyData) => {
+  const handleFormSubmit = async (data: PropertyData) => {
+    // Convert File objects to base64 strings for storage
+    const imagePromises = data.images.map(file => 
+      new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      })
+    );
+
+    const floorplanPromises = data.floorplans.map(file => 
+      new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      })
+    );
+
+    const imageUrls = await Promise.all(imagePromises);
+    const floorplanUrls = await Promise.all(floorplanPromises);
+
+    const storedData: StoredPropertyData = {
+      ...data,
+      images: imageUrls,
+      floorplans: floorplanUrls,
+    };
+
     setPropertyData(data);
+
     if (editingIndex !== null) {
       const newBrochures = [...savedBrochures];
-      newBrochures[editingIndex] = data;
+      newBrochures[editingIndex] = storedData;
       setSavedBrochures(newBrochures);
       localStorage.setItem("savedBrochures", JSON.stringify(newBrochures));
       setEditingIndex(null);
@@ -40,10 +74,36 @@ const Index = () => {
     }
   };
 
-  const saveBrochure = () => {
+  const saveBrochure = async () => {
     if (!propertyData) return;
     
-    const newBrochures = [...savedBrochures, propertyData];
+    // Convert File objects to base64 strings for storage
+    const imagePromises = propertyData.images.map(file => 
+      new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      })
+    );
+
+    const floorplanPromises = propertyData.floorplans.map(file => 
+      new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      })
+    );
+
+    const imageUrls = await Promise.all(imagePromises);
+    const floorplanUrls = await Promise.all(floorplanPromises);
+
+    const storedData: StoredPropertyData = {
+      ...propertyData,
+      images: imageUrls,
+      floorplans: floorplanUrls,
+    };
+    
+    const newBrochures = [...savedBrochures, storedData];
     setSavedBrochures(newBrochures);
     localStorage.setItem("savedBrochures", JSON.stringify(newBrochures));
     
@@ -69,8 +129,33 @@ const Index = () => {
     });
   };
 
-  const editBrochure = (index: number) => {
-    setPropertyData(savedBrochures[index]);
+  const editBrochure = async (index: number) => {
+    const brochure = savedBrochures[index];
+    
+    // Convert base64 strings back to File objects
+    const imagesToFiles = await Promise.all(
+      brochure.images.map(async (dataUrl) => {
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        return new File([blob], 'image.jpg', { type: 'image/jpeg' });
+      })
+    );
+
+    const floorplansToFiles = await Promise.all(
+      brochure.floorplans.map(async (dataUrl) => {
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        return new File([blob], 'floorplan.jpg', { type: 'image/jpeg' });
+      })
+    );
+
+    const propertyDataWithFiles: PropertyData = {
+      ...brochure,
+      images: imagesToFiles,
+      floorplans: floorplansToFiles,
+    };
+
+    setPropertyData(propertyDataWithFiles);
     setEditingIndex(index);
     toast({
       title: "Bewerken gestart",
@@ -78,8 +163,31 @@ const Index = () => {
     });
   };
 
-  const handleGeneratePDF = (brochure: PropertyData) => {
-    setPropertyData(brochure);
+  const handleGeneratePDF = async (brochure: StoredPropertyData) => {
+    // Convert base64 strings back to File objects for PDF generation
+    const imagesToFiles = await Promise.all(
+      brochure.images.map(async (dataUrl) => {
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        return new File([blob], 'image.jpg', { type: 'image/jpeg' });
+      })
+    );
+
+    const floorplansToFiles = await Promise.all(
+      brochure.floorplans.map(async (dataUrl) => {
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        return new File([blob], 'floorplan.jpg', { type: 'image/jpeg' });
+      })
+    );
+
+    const propertyDataWithFiles: PropertyData = {
+      ...brochure,
+      images: imagesToFiles,
+      floorplans: floorplansToFiles,
+    };
+
+    setPropertyData(propertyDataWithFiles);
     toast({
       title: "PDF Generatie",
       description: "Uw brochure wordt gegenereerd",
@@ -96,7 +204,7 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <PropertyForm onSubmit={handleFormSubmit} initialData={editingIndex !== null ? savedBrochures[editingIndex] : undefined} />
+            <PropertyForm onSubmit={handleFormSubmit} initialData={editingIndex !== null ? propertyData : undefined} />
           </div>
           <div className="space-y-4">
             {propertyData && (
@@ -144,7 +252,7 @@ const Index = () => {
                     {brochure.images.length > 0 && (
                       <div className="mb-4 aspect-[4/3] overflow-hidden rounded-lg">
                         <img
-                          src={URL.createObjectURL(brochure.images[0])}
+                          src={brochure.images[0]}
                           alt={brochure.title}
                           className="w-full h-full object-cover"
                         />
@@ -181,3 +289,4 @@ const Index = () => {
 };
 
 export default Index;
+
