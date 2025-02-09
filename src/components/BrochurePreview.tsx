@@ -26,103 +26,103 @@ export function BrochurePreview({ data }: BrochurePreviewProps) {
 
   return (
     <Card className="w-full max-w-2xl p-6 bg-white shadow-lg animate-fadeIn">
-      <div className="space-y-6">
-        <div className="text-center">
-          <h2 className="text-3xl font-semibold text-estate-800">{data.title}</h2>
-          <p className="text-xl text-estate-600 mt-2">{data.price}</p>
+      <div className="space-y-8">
+        <div className="text-center border-b pb-6">
+          <h2 className="text-3xl font-semibold text-estate-800 mb-2">{data.title}</h2>
+          <p className="text-2xl text-estate-600 font-medium">{data.price}</p>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
+        {data.images.length > 0 && (
+          <div className="grid grid-cols-2 gap-4">
+            {Array.from(data.images).map((image, index) => (
+              <div key={index} className="relative pb-[75%] overflow-hidden rounded-lg">
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Woning afbeelding ${index + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="grid grid-cols-4 gap-6 bg-estate-50 p-6 rounded-lg">
           <div className="flex flex-col items-center">
-            <Home className="w-6 h-6 text-estate-600 mb-2" />
-            <p className="text-estate-500">Woonoppervlak</p>
+            <Home className="w-8 h-8 text-estate-600 mb-2" />
+            <p className="text-estate-500 text-sm">Woonoppervlak</p>
             <p className="text-lg font-semibold">{data.livingArea} m²</p>
           </div>
           <div className="flex flex-col items-center">
-            <Ruler className="w-6 h-6 text-estate-600 mb-2" />
-            <p className="text-estate-500">Perceel</p>
+            <Ruler className="w-8 h-8 text-estate-600 mb-2" />
+            <p className="text-estate-500 text-sm">Perceel</p>
             <p className="text-lg font-semibold">{data.sqft} m²</p>
           </div>
           <div className="flex flex-col items-center">
-            <Calendar className="w-6 h-6 text-estate-600 mb-2" />
-            <p className="text-estate-500">Bouwjaar</p>
+            <Calendar className="w-8 h-8 text-estate-600 mb-2" />
+            <p className="text-estate-500 text-sm">Bouwjaar</p>
             <p className="text-lg font-semibold">{data.buildYear}</p>
           </div>
           <div className="flex flex-col items-center">
-            <Car className="w-6 h-6 text-estate-600 mb-2" />
-            <p className="text-estate-500">Garages</p>
+            <Car className="w-8 h-8 text-estate-600 mb-2" />
+            <p className="text-estate-500 text-sm">Garages</p>
             <p className="text-lg font-semibold">{data.garages}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <p className="text-estate-500">Slaapkamers</p>
-            <p className="text-lg font-semibold">{data.bedrooms}</p>
+        <div className="grid grid-cols-3 gap-6 bg-estate-50 p-6 rounded-lg">
+          <div className="text-center">
+            <p className="text-estate-500 text-sm">Slaapkamers</p>
+            <p className="text-xl font-semibold">{data.bedrooms}</p>
           </div>
-          <div>
-            <p className="text-estate-500">Badkamers</p>
-            <p className="text-lg font-semibold">{data.bathrooms}</p>
+          <div className="text-center">
+            <p className="text-estate-500 text-sm">Badkamers</p>
+            <p className="text-xl font-semibold">{data.bathrooms}</p>
           </div>
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5" />
-              <p className="text-estate-500">Energielabel</p>
+              <p className="text-estate-500 text-sm">Energielabel</p>
             </div>
-            <div className={`mt-1 px-3 py-1 rounded-full text-white font-semibold ${getEnergyLabelColor(data.energyLabel)}`}>
+            <div className={`mt-2 px-4 py-1 rounded-full text-white font-semibold ${getEnergyLabelColor(data.energyLabel)}`}>
               {data.energyLabel}
             </div>
           </div>
         </div>
 
-        <div>
-          <h3 className="text-lg font-semibold text-estate-700 mb-2">Locatie</h3>
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-estate-700">Locatie</h3>
           <p className="text-estate-600">{data.address}</p>
         </div>
 
-        <div>
-          <h3 className="text-lg font-semibold text-estate-700 mb-2">Beschrijving</h3>
-          <p className="text-estate-600 whitespace-pre-wrap">{data.description}</p>
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-estate-700">Beschrijving</h3>
+          <p className="text-estate-600 whitespace-pre-wrap leading-relaxed">{data.description}</p>
         </div>
 
         {data.features.length > 0 && (
-          <div>
-            <h3 className="text-lg font-semibold text-estate-700 mb-2">Kenmerken</h3>
-            <ul className="list-disc list-inside space-y-1">
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold text-estate-700">Kenmerken</h3>
+            <ul className="grid grid-cols-2 gap-2">
               {data.features.map((feature, index) => (
-                <li key={feature.id} className="text-estate-600">{feature.description}</li>
+                <li key={feature.id} className="text-estate-600 flex items-center">
+                  <span className="w-2 h-2 bg-estate-400 rounded-full mr-2"></span>
+                  {feature.description}
+                </li>
               ))}
             </ul>
           </div>
         )}
 
-        {data.images.length > 0 && (
-          <div>
-            <h3 className="text-lg font-semibold text-estate-700 mb-2">Foto's</h3>
-            <div className="grid grid-cols-2 gap-4">
-              {Array.from(data.images).map((image, index) => (
-                <div key={index} className="aspect-video relative overflow-hidden rounded-lg">
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt={`Woning afbeelding ${index + 1}`}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {data.floorplans.length > 0 && (
-          <div>
-            <h3 className="text-lg font-semibold text-estate-700 mb-2">Plattegronden</h3>
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-estate-700">Plattegronden</h3>
             <div className="grid grid-cols-2 gap-4">
               {Array.from(data.floorplans).map((floorplan, index) => (
-                <div key={index} className="aspect-video relative overflow-hidden rounded-lg">
+                <div key={index} className="relative pb-[75%] overflow-hidden rounded-lg">
                   <img
                     src={URL.createObjectURL(floorplan)}
                     alt={`Plattegrond ${index + 1}`}
-                    className="object-cover w-full h-full"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
               ))}
