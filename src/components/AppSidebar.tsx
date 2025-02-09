@@ -1,5 +1,5 @@
 
-import { Home, Settings } from "lucide-react";
+import { Home, Settings, Edit2, FileDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   Sidebar,
@@ -11,6 +11,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/components/ui/use-toast";
 
 const items = [
   {
@@ -25,8 +30,39 @@ const items = [
   },
 ];
 
+interface StoredPropertyData {
+  title: string;
+  address: string;
+  images: string[];
+  [key: string]: any;
+}
+
 export function AppSidebar() {
   const navigate = useNavigate();
+  const [savedBrochures, setSavedBrochures] = useState<StoredPropertyData[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const saved = localStorage.getItem("savedBrochures");
+    if (saved) {
+      setSavedBrochures(JSON.parse(saved));
+    }
+  }, []);
+
+  const handleEditBrochure = () => {
+    navigate("/");
+    toast({
+      title: "Bewerken",
+      description: "U wordt doorgestuurd naar de bewerkingspagina",
+    });
+  };
+
+  const handleGeneratePDF = () => {
+    toast({
+      title: "PDF Generatie",
+      description: "Uw brochure wordt gegenereerd",
+    });
+  };
 
   return (
     <Sidebar>
@@ -45,6 +81,51 @@ export function AppSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-4">
+          <SidebarGroupLabel>Saved Brochures</SidebarGroupLabel>
+          <ScrollArea className="h-[400px]">
+            <div className="grid gap-4 p-4">
+              {savedBrochures.map((brochure, index) => (
+                <Card key={index} className="relative overflow-hidden">
+                  {brochure.images.length > 0 && (
+                    <div className="aspect-[4/3] relative">
+                      <img
+                        src={brochure.images[0]}
+                        alt={brochure.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={handleEditBrochure}
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={handleGeneratePDF}
+                        >
+                          <FileDown className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2">
+                        <p className="text-white text-sm font-medium truncate">
+                          {brochure.title}
+                        </p>
+                        <p className="text-white/80 text-xs truncate">
+                          {brochure.address}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              ))}
+            </div>
+          </ScrollArea>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
