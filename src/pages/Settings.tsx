@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +12,7 @@ interface AgencySettings {
   address: string;
   primaryColor: string;
   secondaryColor: string;
+  logo?: File;
 }
 
 const Settings = () => {
@@ -32,9 +32,21 @@ const Settings = () => {
         };
   });
 
+  const [logoPreview, setLogoPreview] = useState<string>("");
+
+  useEffect(() => {
+    const savedLogo = localStorage.getItem("agencyLogo");
+    if (savedLogo) {
+      setLogoPreview(savedLogo);
+    }
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem("agencySettings", JSON.stringify(settings));
+    if (logoPreview) {
+      localStorage.setItem("agencyLogo", logoPreview);
+    }
     toast({
       title: "Success",
       description: "Settings saved successfully",
@@ -49,10 +61,40 @@ const Settings = () => {
     }));
   };
 
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Agency Settings</h1>
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+        <div className="space-y-2">
+          <Label htmlFor="logo">Agency Logo</Label>
+          <Input
+            id="logo"
+            name="logo"
+            type="file"
+            onChange={handleLogoUpload}
+            accept="image/*"
+          />
+          {logoPreview && (
+            <div className="mt-2">
+              <img
+                src={logoPreview}
+                alt="Agency Logo"
+                className="h-16 object-contain"
+              />
+            </div>
+          )}
+        </div>
         <div className="space-y-2">
           <Label htmlFor="name">Agency Name</Label>
           <Input

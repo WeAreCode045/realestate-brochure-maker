@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { PropertyForm, PropertyData } from "@/components/PropertyForm";
 import { BrochurePreview } from "@/components/BrochurePreview";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
-import { X, Edit2, Save } from "lucide-react";
+import { X, Edit2, Save, FileDown } from "lucide-react";
 
 const Index = () => {
   const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
@@ -79,6 +78,14 @@ const Index = () => {
     });
   };
 
+  const handleGeneratePDF = (brochure: PropertyData) => {
+    setPropertyData(brochure);
+    toast({
+      title: "PDF Generatie",
+      description: "Uw brochure wordt gegenereerd",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-estate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -134,15 +141,34 @@ const Index = () => {
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
+                    {brochure.images.length > 0 && (
+                      <div className="mb-4 aspect-[4/3] overflow-hidden rounded-lg">
+                        <img
+                          src={URL.createObjectURL(brochure.images[0])}
+                          alt={brochure.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
                     <h3 className="font-semibold mb-2">{brochure.title}</h3>
                     <p className="text-sm text-gray-500 mb-4">{brochure.address}</p>
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => editBrochure(index)}
-                    >
-                      Bewerken
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => editBrochure(index)}
+                      >
+                        Bewerken
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => handleGeneratePDF(brochure)}
+                      >
+                        <FileDown className="w-4 h-4 mr-2" />
+                        PDF
+                      </Button>
+                    </div>
                   </Card>
                 ))}
               </div>
@@ -155,4 +181,3 @@ const Index = () => {
 };
 
 export default Index;
-

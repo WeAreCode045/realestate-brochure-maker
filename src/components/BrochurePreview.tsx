@@ -1,13 +1,27 @@
-
 import { Card } from "@/components/ui/card";
 import { PropertyData } from "./PropertyForm";
 import { Home, Car, Calendar, Ruler, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface BrochurePreviewProps {
   data: PropertyData;
 }
 
 export function BrochurePreview({ data }: BrochurePreviewProps) {
+  const [agencySettings, setAgencySettings] = useState<any>(null);
+  const [agencyLogo, setAgencyLogo] = useState<string>("");
+
+  useEffect(() => {
+    const settings = localStorage.getItem("agencySettings");
+    const logo = localStorage.getItem("agencyLogo");
+    if (settings) {
+      setAgencySettings(JSON.parse(settings));
+    }
+    if (logo) {
+      setAgencyLogo(logo);
+    }
+  }, []);
+
   const getEnergyLabelColor = (label: string) => {
     const colors: { [key: string]: string } = {
       'A+++': 'bg-green-600',
@@ -27,24 +41,24 @@ export function BrochurePreview({ data }: BrochurePreviewProps) {
   return (
     <Card className="w-full max-w-2xl p-6 bg-white shadow-lg animate-fadeIn">
       <div className="space-y-8">
+        {data.images.length > 0 && (
+          <div className="aspect-[4/3] w-full overflow-hidden rounded-lg mb-6">
+            <img
+              src={URL.createObjectURL(data.images[0])}
+              alt={data.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
+              <h2 className="text-2xl font-semibold">{data.title}</h2>
+              <p className="text-xl">{data.price}</p>
+            </div>
+          </div>
+        )}
+
         <div className="text-center border-b pb-6">
           <h2 className="text-3xl font-semibold text-estate-800 mb-2">{data.title}</h2>
           <p className="text-2xl text-estate-600 font-medium">{data.price}</p>
         </div>
-
-        {data.images.length > 0 && (
-          <div className="grid grid-cols-2 gap-4">
-            {Array.from(data.images).map((image, index) => (
-              <div key={index} className="relative pb-[75%] overflow-hidden rounded-lg">
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt={`Woning afbeelding ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        )}
 
         <div className="grid grid-cols-4 gap-6 bg-estate-50 p-6 rounded-lg">
           <div className="flex flex-col items-center">
@@ -129,6 +143,30 @@ export function BrochurePreview({ data }: BrochurePreviewProps) {
             </div>
           </div>
         )}
+
+        <div className="mt-8 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              {agencySettings && (
+                <>
+                  <p className="font-semibold">{agencySettings.name}</p>
+                  <p>{agencySettings.address}</p>
+                  <p>{agencySettings.phone}</p>
+                  <p>{agencySettings.email}</p>
+                </>
+              )}
+            </div>
+            {agencyLogo && (
+              <div className="w-32">
+                <img
+                  src={agencyLogo}
+                  alt="Agency Logo"
+                  className="h-12 object-contain"
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </Card>
   );
