@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { X, Edit2, Save, FileDown } from "lucide-react";
+import PDFDocument from 'pdfkit';
 
 // Helper type to store image data
 interface StoredPropertyData extends Omit<PropertyData, 'images' | 'floorplans'> {
