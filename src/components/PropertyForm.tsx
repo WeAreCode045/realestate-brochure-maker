@@ -68,10 +68,10 @@ export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newImages = Array.from(e.target.files);
-      if (newImages.length > 10) {
+      if (newImages.length > 20) {
         toast({
           title: "Te veel afbeeldingen",
-          description: "Selecteer maximaal 10 afbeeldingen",
+          description: "Selecteer maximaal 20 afbeeldingen",
           variant: "destructive",
         });
         return;
@@ -83,10 +83,10 @@ export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
   const handleFloorplanUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFloorplans = Array.from(e.target.files);
-      if (newFloorplans.length > 3) {
+      if (newFloorplans.length > 10) {
         toast({
           title: "Te veel plattegronden",
-          description: "Selecteer maximaal 3 plattegronden",
+          description: "Selecteer maximaal 10 plattegronden",
           variant: "destructive",
         });
         return;

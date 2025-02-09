@@ -15,7 +15,7 @@ export function PropertyImages({
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="images">Foto's (Max 10)</Label>
+        <Label htmlFor="images">Foto's (Max 20)</Label>
         <Input
           id="images"
           name="images"
@@ -29,7 +29,7 @@ export function PropertyImages({
       </div>
 
       <div>
-        <Label htmlFor="floorplans">Plattegronden (Max 3)</Label>
+        <Label htmlFor="floorplans">Plattegronden (Max 10)</Label>
         <Input
           id="floorplans"
           name="floorplans"
