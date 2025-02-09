@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -32,9 +32,10 @@ export interface PropertyData {
 
 interface PropertyFormProps {
   onSubmit: (data: PropertyData) => void;
+  initialData?: PropertyData;
 }
 
-export function PropertyForm({ onSubmit }: PropertyFormProps) {
+export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState<PropertyData>({
     title: "",
@@ -52,6 +53,12 @@ export function PropertyForm({ onSubmit }: PropertyFormProps) {
     images: [],
     floorplans: [],
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
