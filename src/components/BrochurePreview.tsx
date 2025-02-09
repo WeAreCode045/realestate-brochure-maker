@@ -126,7 +126,22 @@ export function BrochurePreview({ data }: BrochurePreviewProps) {
             </ul>
           </div>
         )}
-
+{data.images.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-estate-700">Foto's</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {Array.from(data.images).map((images, index) => (
+                <div key={index} className="relative pb-[75%] overflow-hidden rounded-lg">
+                  <img
+                    src={URL.createObjectURL(images)}
+                    alt={`Fotos ${index + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {data.floorplans.length > 0 && (
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-estate-700">Plattegronden</h3>
