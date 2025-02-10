@@ -38,6 +38,7 @@ interface StoredPropertyData {
   title: string;
   address: string;
   images: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
