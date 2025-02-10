@@ -1,10 +1,36 @@
-// src/utils/pdfGenerator.ts
-import PDFDocument from 'pdfkit';
+
 import { PropertyData } from '../components/PropertyForm';
+import type PDFKit from 'pdfkit';
+
+// Helper function to convert File to Buffer
+async function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as ArrayBuffer);
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+// Helper function to convert data URL to Uint8Array
+function dataURLtoUint8Array(dataURL: string): Uint8Array {
+  const base64 = dataURL.split(',')[1];
+  const binaryString = window.atob(base64);
+  const length = binaryString.length;
+  const bytes = new Uint8Array(length);
+  for (let i = 0; i < length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
 
 export async function generatePropertyPDF(propertyData: PropertyData): Promise<Blob> {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
+      // Dynamically import PDFKit
+      const PDFDocument = (await import('pdfkit/js/pdfkit.standalone')).default;
+      
+      // Create a new PDFDocument
       const doc = new PDFDocument({
         size: 'A4',
         margin: 50,
@@ -13,114 +39,74 @@ export async function generatePropertyPDF(propertyData: PropertyData): Promise<B
 
       // Collect PDF chunks
       const chunks: Uint8Array[] = [];
-      doc.on('data', chunks.push.bind(chunks));
+      doc.on('data', (chunk) => chunks.push(chunk));
       doc.on('end', () => {
         const pdfBlob = new Blob(chunks, { type: 'application/pdf' });
         resolve(pdfBlob);
       });
 
-      // Add content to PDF
-      addContentToPDF(doc, propertyData);
+      // Create the PDF content
+      doc.fontSize(24).font('Helvetica-Bold').text(propertyData.title, { align: 'center' });
+      doc.fontSize(18).font('Helvetica').text(propertyData.price, { align: 'center' });
+      doc.moveDown();
 
-      doc.end();
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
+      // Property Details
+      doc.fontSize(14).font('Helvetica-Bold').text('Property Details');
+      doc.fontSize(12).font('Helvetica');
+      doc.text(`Address: ${propertyData.address}`);
+      doc.text(`Living Area: ${propertyData.livingArea} m²`);
+      doc.text(`Plot Size: ${propertyData.sqft} m²`);
+      doc.text(`Bedrooms: ${propertyData.bedrooms}`);
+      doc.text(`Bathrooms: ${propertyData.bathrooms}`);
+      doc.text(`Build Year: ${propertyData.buildYear}`);
+      doc.text(`Garages: ${propertyData.garages}`);
+      doc.text(`Energy Label: ${propertyData.energyLabel}`);
+      doc.moveDown();
 
-function addContentToPDF(doc: PDFKit.PDFDocument, data: PropertyData) {
-  // Header with main image
-  if (data.images.length > 0) {
-    doc.image(data.images[0], {
-      fit: [500, 300],
-      align: 'center'
-    });
-    doc.moveDown();
-  }
+      // Description
+      doc.fontSize(14).font('Helvetica-Bold').text('Description');
+      doc.fontSize(12).font('Helvetica').text(propertyData.description);
+      doc.moveDown();
 
-  // Title and Price
-  doc.fontSize(24).font('Helvetica-Bold').text(data.title, { align: 'center' });
-  doc.fontSize(18).font('Helvetica').text(data.price, { align: 'center' });
-  doc.moveDown();
-
-  // Property Details
-  doc.fontSize(14).font('Helvetica-Bold').text('Property Details');
-  doc.fontSize(12).font('Helvetica');
-  doc.text(`Address: ${data.address}`);
-  doc.text(`Living Area: ${data.livingArea} m²`);
-  doc.text(`Plot Size: ${data.sqft} m²`);
-  doc.text(`Bedrooms: ${data.bedrooms}`);
-  doc.text(`Bathrooms: ${data.bathrooms}`);
-  doc.text(`Build Year: ${data.buildYear}`);
-  doc.text(`Garages: ${data.garages}`);
-  doc.text(`Energy Label: ${data.energyLabel}`);
-  doc.moveDown();
-
-  // Description
-  doc.fontSize(14).font('Helvetica-Bold').text('Description');
-  doc.fontSize(12).font('Helvetica').text(data.description);
-  doc.moveDown();
-
-  // Features
-  if (data.features.length > 0) {
-    doc.fontSize(14).font('Helvetica-Bold').text('Features');
-    data.features.forEach(feature => {
-      doc.fontSize(12).font('Helvetica').text(`• ${feature.description}`);
-    });
-    doc.moveDown();
-  }
-
-  // Images
-  if (data.images.length > 1) {
-    doc.addPage();
-    doc.fontSize(14).font('Helvetica-Bold').text('Photos', { align: 'center' });
-    doc.moveDown();
-
-    const imagesPerRow = 2;
-    const imageWidth = 250;
-    const imageHeight = (imageWidth * 3) / 4;
-    const spacing = 20;
-
-    for (let i = 1; i < data.images.length; i++) {
-      const row = Math.floor((i - 1) / imagesPerRow);
-      const col = (i - 1) % imagesPerRow;
-      const x = 50 + (col * (imageWidth + spacing));
-      const y = doc.y + (row * (imageHeight + spacing));
-
-      if (y + imageHeight > doc.page.height - 50) {
-        doc.addPage();
-        doc.fontSize(14).font('Helvetica-Bold').text('Photos (continued)', { align: 'center' });
+      // Features
+      if (propertyData.features.length > 0) {
+        doc.fontSize(14).font('Helvetica-Bold').text('Features');
+        propertyData.features.forEach(feature => {
+          doc.fontSize(12).font('Helvetica').text(`• ${feature.description}`);
+        });
         doc.moveDown();
       }
 
-      doc.image(data.images[i], x, doc.y, {
-        fit: [imageWidth, imageHeight]
-      });
+      // Add agency information if available
+      const agencySettings = localStorage.getItem('agencySettings');
+      const agencyLogo = localStorage.getItem('agencyLogo');
+
+      if (agencySettings) {
+        doc.addPage();
+        doc.fontSize(14).font('Helvetica-Bold').text('Contact Information', { align: 'center' });
+        doc.moveDown();
+
+        const settings = JSON.parse(agencySettings);
+        doc.fontSize(12).font('Helvetica');
+        doc.text(`${settings.name}`);
+        doc.text(`${settings.address}`);
+        doc.text(`${settings.phone}`);
+        doc.text(`${settings.email}`);
+
+        if (agencyLogo) {
+          const logoArray = dataURLtoUint8Array(agencyLogo);
+          doc.image(logoArray, {
+            fit: [200, 100],
+            align: 'center'
+          });
+        }
+      }
+
+      // Finalize the PDF
+      doc.end();
+    } catch (error) {
+      console.error('PDF Generation Error:', error);
+      reject(error);
     }
-  }
-
-  // Add agency information if available
-  const agencySettings = localStorage.getItem('agencySettings');
-  const agencyLogo = localStorage.getItem('agencyLogo');
-
-  if (agencySettings) {
-    doc.addPage();
-    doc.fontSize(14).font('Helvetica-Bold').text('Contact Information', { align: 'center' });
-    doc.moveDown();
-
-    const settings = JSON.parse(agencySettings);
-    doc.fontSize(12).font('Helvetica');
-    doc.text(`${settings.name}`);
-    doc.text(`${settings.address}`);
-    doc.text(`${settings.phone}`);
-    doc.text(`${settings.email}`);
-
-    if (agencyLogo) {
-      doc.image(agencyLogo, {
-        fit: [200, 100],
-        align: 'center'
-      });
-    }
-  }
+  });
 }

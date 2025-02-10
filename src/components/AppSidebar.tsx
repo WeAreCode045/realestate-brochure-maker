@@ -1,6 +1,6 @@
-// components/AppSidebar.tsx
+
 import { Home, Settings, Edit2, FileDown } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -41,6 +41,7 @@ interface StoredPropertyData {
 
 export function AppSidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [savedBrochures, setSavedBrochures] = useState<StoredPropertyData[]>([]);
   const { toast } = useToast();
 
@@ -51,11 +52,14 @@ export function AppSidebar() {
     }
   }, []);
 
-  const handleEditBrochure = () => {
-    navigate("/");
-    toast({
-      title: "Bewerken",
-      description: "U wordt doorgestuurd naar de bewerkingspagina",
+  const handleEditBrochure = (brochure: StoredPropertyData) => {
+    navigate('/', { 
+      state: { 
+        editBrochure: {
+          ...brochure,
+          features: brochure.features || []
+        }
+      }
     });
   };
 
@@ -66,18 +70,20 @@ export function AppSidebar() {
         description: "Even geduld, uw brochure wordt gegenereerd...",
       });
 
-      // Convert stored data back to PropertyData format
       const propertyData: PropertyData = {
         ...brochure,
-        images: await Promise.all(
-          brochure.images.map(async (imageUrl) => {
-            const response = await fetch(imageUrl);
-            const blob = await response.blob();
-            return new File([blob], 'image.jpg', { type: 'image/jpeg' });
-          })
-        ),
+        images: [],
         features: brochure.features || [],
-        floorplans: brochure.floorplans || []
+        floorplans: [],
+        price: brochure.price || '',
+        bedrooms: brochure.bedrooms || '',
+        bathrooms: brochure.bathrooms || '',
+        sqft: brochure.sqft || '',
+        livingArea: brochure.livingArea || '',
+        buildYear: brochure.buildYear || '',
+        garages: brochure.garages || '',
+        energyLabel: brochure.energyLabel || '',
+        description: brochure.description || ''
       };
 
       // Generate PDF
@@ -143,7 +149,7 @@ export function AppSidebar() {
                         <Button
                           variant="secondary"
                           size="sm"
-                          onClick={handleEditBrochure}
+                          onClick={() => handleEditBrochure(brochure)}
                         >
                           <Edit2 className="w-4 h-4" />
                         </Button>
