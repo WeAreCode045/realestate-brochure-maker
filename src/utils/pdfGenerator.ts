@@ -25,26 +25,31 @@ function dataURLtoUint8Array(dataURL: string): Uint8Array {
 }
 
 export async function generatePropertyPDF(propertyData: PropertyData): Promise<Blob> {
-  return new Promise(async (resolve, reject) => {
+  // Dynamically import PDFKit
+  const PDFDocument = (await import('pdfkit/js/pdfkit.standalone')).default;
+
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({
+      size: 'A4',
+      margin: 50,
+      bufferPages: true
+    });
+
+    // Collect PDF chunks
+    const chunks: Uint8Array[] = [];
+    doc.on('data', (chunk) => chunks.push(chunk));
+    doc.on('end', () => {
+      const pdfBlob = new Blob(chunks, { type: 'application/pdf' });
+      resolve(pdfBlob);
+    });
+
+    // Handle errors
+    doc.on('error', (error) => {
+      console.error('PDF Generation Error:', error);
+      reject(error);
+    });
+
     try {
-      // Dynamically import PDFKit
-      const PDFDocument = (await import('pdfkit/js/pdfkit.standalone')).default;
-      
-      // Create a new PDFDocument
-      const doc = new PDFDocument({
-        size: 'A4',
-        margin: 50,
-        bufferPages: true
-      });
-
-      // Collect PDF chunks
-      const chunks: Uint8Array[] = [];
-      doc.on('data', (chunk) => chunks.push(chunk));
-      doc.on('end', () => {
-        const pdfBlob = new Blob(chunks, { type: 'application/pdf' });
-        resolve(pdfBlob);
-      });
-
       // Create the PDF content
       doc.fontSize(24).font('Helvetica-Bold').text(propertyData.title, { align: 'center' });
       doc.fontSize(18).font('Helvetica').text(propertyData.price, { align: 'center' });
