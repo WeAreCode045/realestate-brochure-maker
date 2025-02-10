@@ -1,6 +1,12 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
+import { useSettingsStore } from '@/store/settingsStore';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+export function getSupabaseClient() {
+  const settings = useSettingsStore.getState().supabaseSettings;
+  
+  if (!settings.url || !settings.anonKey) {
+    throw new Error('Supabase credentials not configured');
+  }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+  return createClient(settings.url, settings.anonKey);
+}
