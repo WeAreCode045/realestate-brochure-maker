@@ -18,6 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { generatePropertyPDF } from '../utils/pdfGenerator';
 import { PropertyData } from './PropertyForm';
+import { supabase } from '@/lib/supabase';
 
 const items = [
   {
@@ -33,6 +34,7 @@ const items = [
 ];
 
 interface StoredPropertyData {
+  id: string;
   title: string;
   address: string;
   images: string[];
@@ -46,15 +48,24 @@ export function AppSidebar() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const saved = localStorage.getItem("savedBrochures");
-    if (saved) {
-      setSavedBrochures(JSON.parse(saved));
-    }
+    const fetchSavedBrochures = async () => {
+      const { data, error } = await supabase
+        .from('brochures')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching brochures:', error);
+      } else {
+        setSavedBrochures(data);
+      }
+    };
+
+    fetchSavedBrochures();
   }, []);
 
   const handleEditBrochure = (brochure: StoredPropertyData) => {
-    navigate('/', { 
-      state: { 
+    navigate('/', {
+      state: {
         editBrochure: {
           ...brochure,
           features: brochure.features || []
