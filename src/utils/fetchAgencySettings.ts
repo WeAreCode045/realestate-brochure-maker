@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AgencySettings, Typography } from "@/types/agency";
+import { AgencySettings } from "@/types/agency";
+import { defaultAgencySettings } from "./defaultAgencySettings";
 
 export async function fetchAgencySettings(): Promise<AgencySettings | null> {
   const { data, error } = await supabase
@@ -15,67 +16,31 @@ export async function fetchAgencySettings(): Promise<AgencySettings | null> {
 
   if (!data) return null;
 
-  const defaultTypography: Typography = {
-    color: "#64748B",
-    size: "1rem",
-    weight: "400",
-    font: "Inter"
-  };
-
   return {
     id: String(data.id),
-    name: data.name || "",
-    agentName: data.agent_name || "",
-    email: data.email || "",
-    phone: data.phone || "",
-    address: data.address || "",
-    primaryColor: data.primary_color || "#40497A",
-    secondaryColor: data.secondary_color || "#E2E8F0",
+    name: data.name || defaultAgencySettings.name,
+    agentName: data.agent_name || defaultAgencySettings.agentName,
+    email: data.email || defaultAgencySettings.email,
+    phone: data.phone || defaultAgencySettings.phone,
+    address: data.address || defaultAgencySettings.address,
+    primaryColor: data.primary_color || defaultAgencySettings.primaryColor,
+    secondaryColor: data.secondary_color || defaultAgencySettings.secondaryColor,
     logoUrl: data.logo_url,
-    iconBuildYear: data.icon_build_year || "calendar",
-    iconBedrooms: data.icon_bedrooms || "bed",
-    iconBathrooms: data.icon_bathrooms || "bath",
-    iconGarages: data.icon_garages || "car",
-    iconEnergyClass: data.icon_energy_class || "zap",
-    iconSqft: data.icon_sqft || "ruler",
-    iconLivingSpace: data.icon_living_space || "home",
-    googleMapsApiKey: data.google_maps_api_key || "",
-    xmlImportUrl: data.xml_import_url || "",
-    typography_h1: data.typography_h1 as Typography || {
-      ...defaultTypography,
-      size: "2.25rem",
-      weight: "700",
-      color: "#1E293B"
-    },
-    typography_h2: data.typography_h2 as Typography || {
-      ...defaultTypography,
-      size: "1.875rem",
-      weight: "600",
-      color: "#334155"
-    },
-    typography_p: data.typography_p as Typography || {
-      ...defaultTypography
-    },
-    typography_title: data.typography_title as Typography || {
-      ...defaultTypography,
-      size: "1.5rem",
-      weight: "600",
-      color: "#1E293B"
-    },
-    typography_price: data.typography_price as Typography || {
-      ...defaultTypography,
-      size: "1.25rem",
-      weight: "700",
-      color: "#0F172A"
-    },
-    typography_label: data.typography_label as Typography || {
-      ...defaultTypography,
-      size: "0.875rem",
-      weight: "500",
-      color: "#475569"
-    },
-    typography_list: data.typography_list as Typography || {
-      ...defaultTypography
-    }
+    iconBuildYear: data.icon_build_year || defaultAgencySettings.iconBuildYear,
+    iconBedrooms: data.icon_bedrooms || defaultAgencySettings.iconBedrooms,
+    iconBathrooms: data.icon_bathrooms || defaultAgencySettings.iconBathrooms,
+    iconGarages: data.icon_garages || defaultAgencySettings.iconGarages,
+    iconEnergyClass: data.icon_energy_class || defaultAgencySettings.iconEnergyClass,
+    iconSqft: data.icon_sqft || defaultAgencySettings.iconSqft,
+    iconLivingSpace: data.icon_living_space || defaultAgencySettings.iconLivingSpace,
+    googleMapsApiKey: data.google_maps_api_key || defaultAgencySettings.googleMapsApiKey,
+    xmlImportUrl: data.xml_import_url || defaultAgencySettings.xmlImportUrl,
+    typography_h1: (data.typography_h1 as Typography) || defaultAgencySettings.typography_h1,
+    typography_h2: (data.typography_h2 as Typography) || defaultAgencySettings.typography_h2,
+    typography_p: (data.typography_p as Typography) || defaultAgencySettings.typography_p,
+    typography_title: (data.typography_title as Typography) || defaultAgencySettings.typography_title,
+    typography_price: (data.typography_price as Typography) || defaultAgencySettings.typography_price,
+    typography_label: (data.typography_label as Typography) || defaultAgencySettings.typography_label,
+    typography_list: (data.typography_list as Typography) || defaultAgencySettings.typography_list,
   };
 }
