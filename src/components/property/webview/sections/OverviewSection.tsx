@@ -18,6 +18,9 @@ export function OverviewSection({ property, settings }: WebViewSectionProps) {
                 className="w-full h-[400px] object-cover rounded-lg shadow-lg"
               />
             </div>
+
+            <WebViewImageGrid images={property.gridImages} settings={settings} />
+
             <div 
               className="relative py-4 px-6 shadow-lg w-full"
               style={{ backgroundColor: settings?.primaryColor || '#40497A' }}
@@ -47,8 +50,6 @@ export function OverviewSection({ property, settings }: WebViewSectionProps) {
             </div>
           </>
         )}
-
-        <WebViewImageGrid images={property.gridImages} settings={settings} />
       </div>
     </div>
   );
