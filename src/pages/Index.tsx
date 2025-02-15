@@ -4,8 +4,8 @@ import { BrochurePreview } from "@/components/BrochurePreview";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Save } from "lucide-react";
+import { dataUrlToFile, fileToDataUrl } from '@/utils/file-utils';
 
-// Helper type to store image data
 interface StoredPropertyData extends Omit<PropertyData, 'images' | 'floorplans'> {
   images: string[];
   floorplans: string[];
@@ -30,7 +30,6 @@ const Index = () => {
   }, []);
 
   const handleFormSubmit = async (data: PropertyData) => {
-    // Convert File objects to base64 strings for storage
     const imagePromises = data.images.map(file => 
       new Promise<string>((resolve) => {
         const reader = new FileReader();
@@ -79,7 +78,6 @@ const Index = () => {
   const saveBrochure = async () => {
     if (!propertyData) return;
     
-    // Convert File objects to base64 strings for storage
     const imagePromises = propertyData.images.map(file => 
       new Promise<string>((resolve) => {
         const reader = new FileReader();
@@ -119,19 +117,12 @@ const Index = () => {
     const brochure = savedBrochures[index];
     
     try {
-      // Convert base64 strings back to File objects
       const imagesToFiles = await Promise.all(
-        brochure.images.map(async (dataUrl) => {
-          const blob = await base64ToBlob(dataUrl);
-          return new File([blob], 'image.jpg', { type: 'image/jpeg' });
-        })
+        brochure.images.map(url => dataUrlToFile(url, 'image.jpg'))
       );
 
       const floorplansToFiles = await Promise.all(
-        brochure.floorplans.map(async (dataUrl) => {
-          const blob = await base64ToBlob(dataUrl);
-          return new File([blob], 'floorplan.jpg', { type: 'image/jpeg' });
-        })
+        brochure.floorplans.map(url => dataUrlToFile(url, 'floorplan.jpg'))
       );
 
       const propertyDataWithFiles: PropertyData = {

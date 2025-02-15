@@ -1,4 +1,3 @@
-
 import { Home, Settings, Edit2, FileDown } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -18,7 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { generatePropertyPDF } from '../utils/pdfGenerator';
 import { PropertyData } from './PropertyForm';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 const items = [
   {

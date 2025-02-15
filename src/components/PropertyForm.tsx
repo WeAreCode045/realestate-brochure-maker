@@ -7,6 +7,7 @@ import { PropertyFeatures } from "./property/PropertyFeatures";
 import { PropertyDescription } from "./property/PropertyDescription";
 import { PropertyImages } from "./property/PropertyImages";
 import { supabase } from "@/integrations/supabase/client";
+import { fileToDataUrl } from '@/utils/file-utils';
 
 export interface PropertyFeature {
   id: string;
@@ -27,14 +28,15 @@ export interface PropertyData {
   energyLabel: string;
   description: string;
   features: PropertyFeature[];
-  images: string[];
-  floorplans: string[];
+  images: File[];
+  floorplans: File[];
 }
 
 interface PropertyFormProps {
   onSubmit: (data: PropertyData) => void;
   initialData?: PropertyData;
 }
+
 export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -78,9 +80,10 @@ export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
         });
         return;
       }
-      setFormData((prev) => ({ ...prev, images: newImages.map(file => file.name) }));
+      setFormData((prev) => ({ ...prev, images: newImages }));
     }
   };
+
   const handleFloorplanUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFloorplans = Array.from(e.target.files);
@@ -92,9 +95,10 @@ export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
         });
         return;
       }
-      setFormData((prev) => ({ ...prev, floorplans: newFloorplans.map(file => file.name) }));
+      setFormData((prev) => ({ ...prev, floorplans: newFloorplans }));
     }
   };
+
   const addFeature = () => {
     setFormData((prev) => ({
       ...prev,
@@ -118,26 +122,18 @@ export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
     }));
   };
 
-  const uploadFiles = async (files: File[], bucket: string) => {
-    const uploadPromises = files.map(async (file) => {
-      const { data, error } = await supabase.storage.from(bucket).upload(file.name, file);
-      if (error) throw error;
-      return data.path;
-    });
-    return Promise.all(uploadPromises);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const imageUrls = await uploadFiles(formData.images.map(name => new File([], name)), 'property-images');
-      const floorplanUrls = await uploadFiles(formData.floorplans.map(name => new File([], name)), 'property-floorplans');
+      const imageUrls = await Promise.all(formData.images.map(fileToDataUrl));
+      const floorplanUrls = await Promise.all(formData.floorplans.map(fileToDataUrl));
 
       const propertyData = {
         ...formData,
         images: imageUrls,
         floorplans: floorplanUrls,
+        features: formData.features || [],
       };
 
       const { error } = await supabase.from('properties').insert([propertyData]);
@@ -148,7 +144,9 @@ export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
         description: "Property saved successfully",
       });
 
-      onSubmit(propertyData);
+      if (props.onSubmit) {
+        props.onSubmit(propertyData);
+      }
     } catch (error) {
       toast({
         title: "Error",
