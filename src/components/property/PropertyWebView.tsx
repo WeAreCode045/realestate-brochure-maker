@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PropertyData } from "@/types/property";
 import { useState } from "react";
@@ -14,12 +13,6 @@ interface PropertyWebViewProps {
   property: PropertyData;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-}
-
-interface Section {
-  id: string;
-  title: string;
-  content: JSX.Element;
 }
 
 export function PropertyWebView({ property, open, onOpenChange }: PropertyWebViewProps) {
@@ -51,7 +44,7 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
     window.print();
   };
 
-  const sections: Section[] = [
+  const sections = [
     {
       id: 'overview',
       title: 'Overview',
@@ -70,7 +63,7 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
               </div>
             )}
 
-            <WebViewImageGrid images={property.gridImages} />
+            <WebViewImageGrid images={property.gridImages} settings={settings} />
           </div>
 
           <WebViewPropertyTitle 

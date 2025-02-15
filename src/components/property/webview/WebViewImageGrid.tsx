@@ -1,10 +1,16 @@
 
 interface WebViewImageGridProps {
   images: string[];
+  settings?: {
+    secondaryColor?: string;
+  };
 }
 
-export function WebViewImageGrid({ images }: WebViewImageGridProps) {
+export function WebViewImageGrid({ images, settings }: WebViewImageGridProps) {
   if (!images || images.length === 0) return null;
+
+  const overlayColor = settings?.secondaryColor || '#E2E8F0';
+  const overlayStyle = { backgroundColor: `${overlayColor}99` }; // 99 adds 60% opacity
 
   return (
     <div className="grid grid-cols-4 gap-4 px-6">
@@ -17,7 +23,7 @@ export function WebViewImageGrid({ images }: WebViewImageGridProps) {
           />
           <div 
             className="absolute inset-0 rounded-lg"
-            style={{ backgroundColor: `rgba(126, 105, 171, 0.6)` }}
+            style={overlayStyle}
           />
         </div>
       ))}
