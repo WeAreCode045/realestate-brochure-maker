@@ -55,17 +55,17 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
       content: (
         <div className="relative h-full">
           <div className="p-6 pb-2 flex justify-between items-center">
-            {settings?.logoUrl && (
-              <img
-                src={settings.logoUrl}
-                alt="Agency Logo"
-                className="w-[35%] h-auto object-contain"
-              />
-            )}
-            <div className="text-right">
-              <p className="text-sm font-semibold text-gray-600 uppercase mb-1">Te Koop</p>
-              <p className="text-2xl font-bold">€ {property.price}</p>
+            <div className="flex items-center gap-4">
+              {settings?.logoUrl && (
+                <img
+                  src={settings.logoUrl}
+                  alt="Agency Logo"
+                  className="w-[200px] h-auto object-contain"
+                />
+              )}
+              <span className="text-xl font-semibold text-gray-600">BROCHURE</span>
             </div>
+            <p className="text-sm font-semibold text-gray-600 uppercase">Te Koop</p>
           </div>
 
           <div className="space-y-4 mt-2">
@@ -94,12 +94,15 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
           </div>
 
           <div 
-            className="absolute bottom-0 left-0 right-0"
+            className="absolute bottom-0 left-0 right-0 py-4"
             style={{ backgroundColor: settings?.primaryColor }}
           >
-            <h1 className="text-3xl font-bold text-white text-center py-2.5">
-              {property.title}
-            </h1>
+            <div className="container flex justify-between items-center px-6">
+              <h1 className="text-3xl font-bold text-white uppercase">
+                {property.title}
+              </h1>
+              <p className="text-2xl font-bold text-white">€ {property.price}</p>
+            </div>
           </div>
         </div>
       )
