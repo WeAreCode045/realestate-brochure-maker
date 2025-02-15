@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { PropertyForm, PropertyData } from "@/components/PropertyForm";
 import { BrochurePreview } from "@/components/BrochurePreview";
@@ -11,6 +10,11 @@ interface StoredPropertyData extends Omit<PropertyData, 'images' | 'floorplans'>
   images: string[];
   floorplans: string[];
 }
+
+const base64ToBlob = async (base64: string) => {
+  const response = await fetch(base64);
+  return await response.blob();
+};
 
 const Index = () => {
   const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
@@ -109,6 +113,47 @@ const Index = () => {
       title: "Brochure opgeslagen",
       description: "De brochure is succesvol opgeslagen",
     });
+  };
+
+  const editBrochure = async (index: number) => {
+    const brochure = savedBrochures[index];
+    
+    try {
+      // Convert base64 strings back to File objects
+      const imagesToFiles = await Promise.all(
+        brochure.images.map(async (dataUrl) => {
+          const blob = await base64ToBlob(dataUrl);
+          return new File([blob], 'image.jpg', { type: 'image/jpeg' });
+        })
+      );
+
+      const floorplansToFiles = await Promise.all(
+        brochure.floorplans.map(async (dataUrl) => {
+          const blob = await base64ToBlob(dataUrl);
+          return new File([blob], 'floorplan.jpg', { type: 'image/jpeg' });
+        })
+      );
+
+      const propertyDataWithFiles: PropertyData = {
+        ...brochure,
+        images: imagesToFiles,
+        floorplans: floorplansToFiles,
+      };
+
+      setPropertyData(propertyDataWithFiles);
+      setEditingIndex(index);
+      toast({
+        title: "Bewerken gestart",
+        description: "U kunt de brochure nu bewerken",
+      });
+    } catch (error) {
+      console.error('Error converting images:', error);
+      toast({
+        title: "Error",
+        description: "Er is een fout opgetreden bij het laden van de afbeeldingen",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

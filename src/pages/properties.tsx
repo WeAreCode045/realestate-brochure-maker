@@ -1,7 +1,7 @@
+
 import { useProperties } from '@/hooks/useProperties';
 import { PropertyData, PropertyForm } from '@/components/PropertyForm';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import Image from 'next/image';
 import { getImageUrl } from '@/utils/supabase-utils';
 
 export default function PropertiesPage() {
@@ -16,8 +16,7 @@ export default function PropertiesPage() {
     }
 
     const handlePropertySubmit = async (data: PropertyData) => {
-        // Handle property submission
-        await refreshProperties(); // Refresh the list after adding new property
+        await refreshProperties();
     };
 
     return (
@@ -35,16 +34,13 @@ export default function PropertiesPage() {
     );
 }
 
-// Optional: Create a PropertyCard component for displaying individual properties
 function PropertyCard({ property }: { property: PropertyData }) {
     return (
         <div className="border rounded-lg p-4 shadow-sm">
             {property.images && property.images[0] && (
-                <Image
-                    src={getImageUrl(property.images[0])}
+                <img
+                    src={typeof property.images[0] === 'string' ? property.images[0] : URL.createObjectURL(property.images[0])}
                     alt={property.title}
-                    width={400}
-                    height={300}
                     className="rounded-lg object-cover w-full h-48 mb-4"
                 />
             )}

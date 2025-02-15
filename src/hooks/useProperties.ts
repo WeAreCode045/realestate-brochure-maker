@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { PropertyData } from '@/components/PropertyForm'; // Adjust the import path
+import { supabase } from '@/integrations/supabase/client';
+import { PropertyData } from '@/components/PropertyForm';
 
 export function useProperties() {
   const [properties, setProperties] = useState<PropertyData[]>([]);

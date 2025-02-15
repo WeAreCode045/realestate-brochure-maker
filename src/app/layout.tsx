@@ -1,5 +1,5 @@
 
-import { SupabaseProvider } from '@/providers/SupabaseProvider';
+import { SupabaseProvider } from '@/components/providers/SupabaseProvider';
 
 export default function RootLayout({
     children,

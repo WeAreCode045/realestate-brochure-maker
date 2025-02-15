@@ -6,7 +6,7 @@ import { PropertyDetails } from "./property/PropertyDetails";
 import { PropertyFeatures } from "./property/PropertyFeatures";
 import { PropertyDescription } from "./property/PropertyDescription";
 import { PropertyImages } from "./property/PropertyImages";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface PropertyFeature {
   id: string;
