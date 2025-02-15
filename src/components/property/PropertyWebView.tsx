@@ -72,7 +72,7 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                 <img
                   src={property.featuredImage}
                   alt={property.title}
-                  className="w-full h-[300px] object-cover rounded-lg"
+                  className="w-full h-[400px] object-cover rounded-lg"
                 />
               </div>
             )}
