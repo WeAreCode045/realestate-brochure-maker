@@ -60,16 +60,19 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                 className="w-[35%] h-auto object-contain"
               />
             )}
-            <p className="text-2xl font-bold">{property.price}</p>
+            <div className="text-right">
+              <p className="text-sm font-semibold text-gray-600 uppercase mb-1">Te Koop</p>
+              <p className="text-2xl font-bold">€ {property.price}</p>
+            </div>
           </div>
 
           <div className="space-y-4 mt-[50px]">
             {property.featuredImage && (
-              <div className="relative">
+              <div className="relative px-6">
                 <img
                   src={property.featuredImage}
                   alt={property.title}
-                  className="w-full aspect-video object-cover"
+                  className="w-full aspect-video object-cover rounded-lg"
                 />
               </div>
             )}
