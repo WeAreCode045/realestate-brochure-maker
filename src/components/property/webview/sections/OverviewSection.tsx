@@ -4,10 +4,6 @@ import { WebViewHeader } from "../WebViewHeader";
 import { WebViewImageGrid } from "../WebViewImageGrid";
 
 export function OverviewSection({ property, settings }: WebViewSectionProps) {
-  const overlayStyle = { 
-    backgroundColor: `${settings?.primaryColor || '#40497A'}BF`
-  };
-
   return (
     <div className="relative h-full">
       <WebViewHeader settings={settings} />
@@ -20,18 +16,14 @@ export function OverviewSection({ property, settings }: WebViewSectionProps) {
               alt={property.title}
               className="w-full h-[400px] object-cover rounded-lg shadow-lg"
             />
-            <div 
-              className="absolute inset-0 mx-6 rounded-lg"
-              style={overlayStyle}
-            />
           </div>
         )}
 
         <WebViewImageGrid images={property.gridImages} settings={settings} />
 
-        <div className="relative mx-6 overflow-hidden">
+        <div className="relative overflow-hidden">
           <div 
-            className="relative py-4 px-6 shadow-lg"
+            className="relative py-4 px-6 shadow-lg w-full"
             style={{ backgroundColor: settings?.primaryColor || '#40497A' }}
           >
             {/* Left fold */}
