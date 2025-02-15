@@ -1,16 +1,15 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AgencySettings, TypographySettings } from "@/types/agency";
+import { AgencySettings, Typography } from "@/types/agency";
 
-interface TypographySettingsProps {
+interface TypographySettingsComponentProps {
   settings: AgencySettings;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onTypographyChange: (element: string, field: keyof TypographySettings, value: string) => void;
+  onTypographyChange: (element: string, field: keyof Typography, value: string) => void;
 }
 
-export const TypographySettings = ({ settings, onChange, onTypographyChange }: TypographySettingsProps) => {
+export const TypographySettings = ({ settings, onChange, onTypographyChange }: TypographySettingsComponentProps) => {
   const typographyElements = [
     { key: 'typography_h1', label: 'Heading 1' },
     { key: 'typography_h2', label: 'Heading 2' },

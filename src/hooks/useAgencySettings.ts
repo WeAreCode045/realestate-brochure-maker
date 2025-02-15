@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AgencySettings, TypographySettings } from "@/types/agency";
+import { AgencySettings, Typography } from "@/types/agency";
 import { useToast } from "@/components/ui/use-toast";
 import { fetchAgencySettings } from "@/utils/fetchAgencySettings";
 
@@ -94,64 +94,40 @@ export const useAgencySettings = () => {
         logoUrl = publicUrl;
       }
 
+      const updateData = {
+        agent_name: settings.agentName,
+        email: settings.email,
+        phone: settings.phone,
+        address: settings.address,
+        primary_color: settings.primaryColor,
+        secondary_color: settings.secondaryColor,
+        logo_url: logoUrl,
+        icon_build_year: settings.iconBuildYear,
+        icon_bedrooms: settings.iconBedrooms,
+        icon_bathrooms: settings.iconBathrooms,
+        icon_garages: settings.iconGarages,
+        icon_energy_class: settings.iconEnergyClass,
+        icon_sqft: settings.iconSqft,
+        icon_living_space: settings.iconLivingSpace,
+        google_maps_api_key: settings.googleMapsApiKey,
+        xml_import_url: settings.xmlImportUrl,
+        typography_h1: settings.typography_h1,
+        typography_h2: settings.typography_h2,
+        typography_p: settings.typography_p,
+        typography_title: settings.typography_title,
+        typography_price: settings.typography_price,
+        typography_label: settings.typography_label,
+        typography_list: settings.typography_list,
+      };
+
       const { error } = settings.id 
         ? await supabase
             .from('agency_settings')
-            .update({
-              name: settings.name,
-              agent_name: settings.agentName,
-              email: settings.email,
-              phone: settings.phone,
-              address: settings.address,
-              primary_color: settings.primaryColor,
-              secondary_color: settings.secondaryColor,
-              logo_url: logoUrl,
-              icon_build_year: settings.iconBuildYear,
-              icon_bedrooms: settings.iconBedrooms,
-              icon_bathrooms: settings.iconBathrooms,
-              icon_garages: settings.iconGarages,
-              icon_energy_class: settings.iconEnergyClass,
-              icon_sqft: settings.iconSqft,
-              icon_living_space: settings.iconLivingSpace,
-              google_maps_api_key: settings.googleMapsApiKey,
-              xml_import_url: settings.xmlImportUrl,
-              typography_h1: settings.typography_h1,
-              typography_h2: settings.typography_h2,
-              typography_p: settings.typography_p,
-              typography_title: settings.typography_title,
-              typography_price: settings.typography_price,
-              typography_label: settings.typography_label,
-              typography_list: settings.typography_list,
-            })
+            .update(updateData)
             .eq('id', settings.id)
         : await supabase
             .from('agency_settings')
-            .insert({
-              name: settings.name,
-              agent_name: settings.agentName,
-              email: settings.email,
-              phone: settings.phone,
-              address: settings.address,
-              primary_color: settings.primaryColor,
-              secondary_color: settings.secondaryColor,
-              logo_url: logoUrl,
-              icon_build_year: settings.iconBuildYear,
-              icon_bedrooms: settings.iconBedrooms,
-              icon_bathrooms: settings.iconBathrooms,
-              icon_garages: settings.iconGarages,
-              icon_energy_class: settings.iconEnergyClass,
-              icon_sqft: settings.iconSqft,
-              icon_living_space: settings.iconLivingSpace,
-              google_maps_api_key: settings.googleMapsApiKey,
-              xml_import_url: settings.xmlImportUrl,
-              typography_h1: settings.typography_h1,
-              typography_h2: settings.typography_h2,
-              typography_p: settings.typography_p,
-              typography_title: settings.typography_title,
-              typography_price: settings.typography_price,
-              typography_label: settings.typography_label,
-              typography_list: settings.typography_list,
-            });
+            .insert({ ...updateData, name: settings.name });
 
       if (error) throw error;
 
@@ -191,7 +167,7 @@ export const useAgencySettings = () => {
     }));
   };
 
-  const handleTypographyChange = (element: string, field: keyof TypographySettings, value: string) => {
+  const handleTypographyChange = (element: string, field: keyof Typography, value: string) => {
     setSettings((prev) => ({
       ...prev,
       [element]: {
