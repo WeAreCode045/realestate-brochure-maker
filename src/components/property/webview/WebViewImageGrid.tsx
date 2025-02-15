@@ -15,14 +15,14 @@ export function WebViewImageGrid({ images, settings }: WebViewImageGridProps) {
   return (
     <div className="grid grid-cols-4 gap-4 px-6">
       {images.slice(0, 4).map((image, index) => (
-        <div key={index} className="relative">
+        <div key={index} className="relative shadow-lg rounded-lg">
           <img
             src={image}
             alt={`Grid ${index + 1}`}
-            className="w-full aspect-video object-cover"
+            className="w-full aspect-video object-cover rounded-lg"
           />
           <div 
-            className="absolute inset-0"
+            className="absolute inset-0 rounded-lg"
             style={overlayStyle}
           />
         </div>
