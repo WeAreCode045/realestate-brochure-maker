@@ -36,56 +36,57 @@ export function BrochurePreview({ data, onRenderComplete }: BrochurePreviewProps
   }, [onRenderComplete]);
 
   const PageWrapper = ({ children, pageNumber }: { children: React.ReactNode; pageNumber: number }) => {
-    if (pageNumber === 0) return <>{children}</>;
+    const showHeaderFooter = pageNumber !== 0;
 
     return (
       <div className="flex flex-col h-full">
-        {/* Header */}
-        <div className="p-6 pb-2 flex justify-between items-start border-b">
-          <div className="flex flex-col gap-2">
-            {agencyLogo && (
-              <img
-                src={agencyLogo}
-                alt="Agency Logo"
-                className="h-12 object-contain"
-              />
-            )}
+        {showHeaderFooter && (
+          <div className="p-6 pb-2 flex justify-between items-start border-b">
+            <div className="flex flex-col gap-2">
+              {agencyLogo && (
+                <img
+                  src={agencyLogo}
+                  alt="Agency Logo"
+                  className="h-12 object-contain"
+                />
+              )}
+            </div>
+            <div className="flex items-center gap-4 text-xs">
+              {agencySettings?.address && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-estate-600" />
+                  <span>{agencySettings.address}</span>
+                </div>
+              )}
+              {agencySettings?.phone && (
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-estate-600" />
+                  <span>{agencySettings.phone}</span>
+                </div>
+              )}
+              {agencySettings?.email && (
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-estate-600" />
+                  <span>{agencySettings.email}</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-4 text-xs">
-            {agencySettings?.address && (
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-estate-600" />
-                <span>{agencySettings.address}</span>
-              </div>
-            )}
-            {agencySettings?.phone && (
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-estate-600" />
-                <span>{agencySettings.phone}</span>
-              </div>
-            )}
-            {agencySettings?.email && (
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-estate-600" />
-                <span>{agencySettings.email}</span>
-              </div>
-            )}
-          </div>
-        </div>
+        )}
 
-        {/* Content */}
-        <div className="flex-1">
+        <div className={`flex-1 ${showHeaderFooter ? 'p-6' : ''}`}>
           {children}
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t mt-auto flex justify-between items-center bg-estate-50">
-          <span className="font-semibold text-estate-600">
-            {pageNumber === 1 ? "Details" : 
-             pageNumber === 2 ? "Kenmerken" : "Media"}
-          </span>
-          <span className="text-sm text-estate-500">{pageNumber + 1}</span>
-        </div>
+        {showHeaderFooter && (
+          <div className="p-4 border-t mt-auto flex justify-between items-center bg-estate-50">
+            <span className="font-semibold text-estate-600">
+              {pageNumber === 1 ? "Details" : 
+               pageNumber === 2 ? "Kenmerken" : "Media"}
+            </span>
+            <span className="text-sm text-estate-500">{pageNumber + 1}</span>
+          </div>
+        )}
       </div>
     );
   };
