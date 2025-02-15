@@ -58,16 +58,6 @@ export const AgencyFields = ({ settings, onChange }: AgencyFieldsProps) => {
           onChange={onChange}
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="googleMapsApiKey">Google Maps API Key</Label>
-        <Input
-          id="googleMapsApiKey"
-          name="googleMapsApiKey"
-          value={settings.googleMapsApiKey}
-          onChange={onChange}
-          type="password"
-        />
-      </div>
     </>
   );
 };
