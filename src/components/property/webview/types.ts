@@ -1,6 +1,6 @@
 
 import { PropertyData } from "@/types/property";
-import { AgencySettings } from "@/types/settings";
+import { AgencySettings } from "@/types/agency";
 
 export interface WebViewSectionProps {
   property: PropertyData;

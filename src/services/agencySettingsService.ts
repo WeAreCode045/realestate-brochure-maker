@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { AgencySettings, Typography } from "@/types/agency";
+import { Json } from "@/integrations/supabase/types";
 
 interface AgencySettingsData {
   agent_name: string;
@@ -19,13 +20,13 @@ interface AgencySettingsData {
   icon_living_space: string;
   google_maps_api_key: string;
   xml_import_url: string;
-  typography_h1: Record<string, unknown>;
-  typography_h2: Record<string, unknown>;
-  typography_p: Record<string, unknown>;
-  typography_title: Record<string, unknown>;
-  typography_price: Record<string, unknown>;
-  typography_label: Record<string, unknown>;
-  typography_list: Record<string, unknown>;
+  typography_h1: Json;
+  typography_h2: Json;
+  typography_p: Json;
+  typography_title: Json;
+  typography_price: Json;
+  typography_label: Json;
+  typography_list: Json;
 }
 
 export const agencySettingsService = {
@@ -43,10 +44,45 @@ export const agencySettingsService = {
     return publicUrl;
   },
 
-  async updateSettings(id: string, data: AgencySettingsData) {
+  async updateSettings(id: string, data: AgencySettings) {
+    const typographyToJson = (typography: Typography): Json => {
+      return {
+        color: typography.color,
+        size: typography.size,
+        weight: typography.weight,
+        font: typography.font
+      } as Json;
+    };
+
+    const updateData: AgencySettingsData = {
+      agent_name: data.agentName,
+      email: data.email,
+      phone: data.phone,
+      address: data.address,
+      primary_color: data.primaryColor,
+      secondary_color: data.secondaryColor,
+      logo_url: data.logoUrl,
+      icon_build_year: data.iconBuildYear,
+      icon_bedrooms: data.iconBedrooms,
+      icon_bathrooms: data.iconBathrooms,
+      icon_garages: data.iconGarages,
+      icon_energy_class: data.iconEnergyClass,
+      icon_sqft: data.iconSqft,
+      icon_living_space: data.iconLivingSpace,
+      google_maps_api_key: data.googleMapsApiKey,
+      xml_import_url: data.xmlImportUrl,
+      typography_h1: typographyToJson(data.typography_h1),
+      typography_h2: typographyToJson(data.typography_h2),
+      typography_p: typographyToJson(data.typography_p),
+      typography_title: typographyToJson(data.typography_title),
+      typography_price: typographyToJson(data.typography_price),
+      typography_label: typographyToJson(data.typography_label),
+      typography_list: typographyToJson(data.typography_list)
+    };
+
     const { error } = await supabase
       .from('agency_settings')
-      .update(data)
+      .update(updateData)
       .eq('id', id);
 
     if (error) throw error;
@@ -55,7 +91,16 @@ export const agencySettingsService = {
   async createSettings(data: AgencySettingsData & { name: string }) {
     const { error } = await supabase
       .from('agency_settings')
-      .insert(data);
+      .insert({
+        ...data,
+        typography_h1: data.typography_h1 as Json,
+        typography_h2: data.typography_h2 as Json,
+        typography_p: data.typography_p as Json,
+        typography_title: data.typography_title as Json,
+        typography_price: data.typography_price as Json,
+        typography_label: data.typography_label as Json,
+        typography_list: data.typography_list as Json,
+      });
 
     if (error) throw error;
   }
