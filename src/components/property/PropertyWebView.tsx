@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PropertyData } from "@/types/property";
 import { useState } from "react";
@@ -63,6 +62,7 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                 className="w-[200px] h-auto object-contain"
               />
             )}
+            <span className="text-2xl font-bold text-gray-600">BROCHURE</span>
           </div>
 
           <div className="space-y-4 mt-2">
@@ -88,15 +88,6 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                 ))}
               </div>
             )}
-
-            <div className="px-6 py-4 text-center">
-              <span 
-                className="text-[100px] font-bold uppercase"
-                style={{ color: settings?.secondaryColor }}
-              >
-                Brochure
-              </span>
-            </div>
           </div>
 
           <div 
