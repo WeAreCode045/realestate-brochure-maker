@@ -218,46 +218,44 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                   Previous
                 </Button>
 
-                <div className="flex items-center gap-4">
-                  <div className="flex gap-2">
-                    {filteredSections.map((section, index) => (
-                      <div
-                        key={section.id}
-                        className={`w-2 h-2 rounded-full transition-colors ${
-                          index === currentPage ? 'bg-primary' : 'bg-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      onClick={() => handleShare('whatsapp')}
-                      title="Share on WhatsApp"
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      onClick={handlePrint}
-                      title="Print Brochure"
-                    >
-                      <Printer className="h-4 w-4" />
-                    </Button>
-                  </div>
+                <div className="flex gap-2">
+                  {filteredSections.map((section, index) => (
+                    <div
+                      key={section.id}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentPage ? 'bg-primary' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
                 </div>
 
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => prev + 1)}
-                  disabled={currentPage === filteredSections.length - 1}
-                >
-                  Next
-                  <ChevronRight className="w-4 h-4 ml-2" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    disabled={currentPage === filteredSections.length - 1}
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => handleShare('whatsapp')}
+                    title="Share on WhatsApp"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={handlePrint}
+                    title="Print Brochure"
+                  >
+                    <Printer className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
