@@ -10,14 +10,16 @@ export function OverviewSection({ property, settings }: WebViewSectionProps) {
 
       <div className="space-y-4 mt-2">
         {property.featuredImage && (
-          <div className="relative">
-            <img
-              src={property.featuredImage}
-              alt={property.title}
-              className="w-full h-[400px] object-cover rounded-lg shadow-lg"
-            />
+          <>
+            <div className="relative">
+              <img
+                src={property.featuredImage}
+                alt={property.title}
+                className="w-full h-[400px] object-cover rounded-lg shadow-lg"
+              />
+            </div>
             <div 
-              className="absolute bottom-0 left-0 right-0 py-4 px-6 shadow-lg w-full"
+              className="relative py-4 px-6 shadow-lg w-full"
               style={{ backgroundColor: settings?.primaryColor || '#40497A' }}
             >
               {/* Left fold */}
@@ -43,7 +45,7 @@ export function OverviewSection({ property, settings }: WebViewSectionProps) {
                 <p className="text-2xl font-bold text-white">€ {property.price}</p>
               </div>
             </div>
-          </div>
+          </>
         )}
 
         <WebViewImageGrid images={property.gridImages} settings={settings} />
