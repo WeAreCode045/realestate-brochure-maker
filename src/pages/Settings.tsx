@@ -16,6 +16,7 @@ const Settings = () => {
     handleSubmit,
     handleChange,
     handleSelectChange,
+    handleTypographyChange,
     handleLogoUpload,
   } = useAgencySettings();
 
@@ -58,6 +59,7 @@ const Settings = () => {
             settings={settings}
             onChange={handleChange}
             onSelectChange={handleSelectChange}
+            onTypographyChange={handleTypographyChange}
           />
         )}
         

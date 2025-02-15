@@ -1,4 +1,11 @@
 
+export interface TypographySettings {
+  color: string;
+  size: string;
+  weight: string;
+  font: string;
+}
+
 export interface AgencySettings {
   id?: string;
   name: string;
@@ -18,4 +25,11 @@ export interface AgencySettings {
   iconLivingSpace?: string;
   googleMapsApiKey?: string;
   xmlImportUrl?: string;
+  typography_h1?: TypographySettings;
+  typography_h2?: TypographySettings;
+  typography_p?: TypographySettings;
+  typography_title?: TypographySettings;
+  typography_price?: TypographySettings;
+  typography_label?: TypographySettings;
+  typography_list?: TypographySettings;
 }

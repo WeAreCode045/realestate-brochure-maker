@@ -34,5 +34,47 @@ export async function fetchAgencySettings(): Promise<AgencySettings | null> {
     iconLivingSpace: data.icon_living_space || "home",
     googleMapsApiKey: data.google_maps_api_key || "",
     xmlImportUrl: data.xml_import_url || "",
+    typography_h1: data.typography_h1 || {
+      color: "#1E293B",
+      size: "2.25rem",
+      weight: "700",
+      font: "Inter"
+    },
+    typography_h2: data.typography_h2 || {
+      color: "#334155",
+      size: "1.875rem",
+      weight: "600",
+      font: "Inter"
+    },
+    typography_p: data.typography_p || {
+      color: "#64748B",
+      size: "1rem",
+      weight: "400",
+      font: "Inter"
+    },
+    typography_title: data.typography_title || {
+      color: "#1E293B",
+      size: "1.5rem",
+      weight: "600",
+      font: "Inter"
+    },
+    typography_price: data.typography_price || {
+      color: "#0F172A",
+      size: "1.25rem",
+      weight: "700",
+      font: "Inter"
+    },
+    typography_label: data.typography_label || {
+      color: "#475569",
+      size: "0.875rem",
+      weight: "500",
+      font: "Inter"
+    },
+    typography_list: data.typography_list || {
+      color: "#64748B",
+      size: "1rem",
+      weight: "400",
+      font: "Inter"
+    }
   };
 }

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AgencySettings } from "@/types/agency";
+import { AgencySettings, TypographySettings } from "@/types/agency";
 import { useToast } from "@/components/ui/use-toast";
 import { fetchAgencySettings } from "@/utils/fetchAgencySettings";
 
@@ -25,6 +25,48 @@ export const useAgencySettings = () => {
     iconLivingSpace: "home",
     googleMapsApiKey: "",
     xmlImportUrl: "",
+    typography_h1: {
+      color: "#1E293B",
+      size: "2.25rem",
+      weight: "700",
+      font: "Inter"
+    },
+    typography_h2: {
+      color: "#334155",
+      size: "1.875rem",
+      weight: "600",
+      font: "Inter"
+    },
+    typography_p: {
+      color: "#64748B",
+      size: "1rem",
+      weight: "400",
+      font: "Inter"
+    },
+    typography_title: {
+      color: "#1E293B",
+      size: "1.5rem",
+      weight: "600",
+      font: "Inter"
+    },
+    typography_price: {
+      color: "#0F172A",
+      size: "1.25rem",
+      weight: "700",
+      font: "Inter"
+    },
+    typography_label: {
+      color: "#475569",
+      size: "0.875rem",
+      weight: "500",
+      font: "Inter"
+    },
+    typography_list: {
+      color: "#64748B",
+      size: "1rem",
+      weight: "400",
+      font: "Inter"
+    }
   });
   const [logoPreview, setLogoPreview] = useState<string>("");
 
@@ -73,6 +115,13 @@ export const useAgencySettings = () => {
               icon_living_space: settings.iconLivingSpace,
               google_maps_api_key: settings.googleMapsApiKey,
               xml_import_url: settings.xmlImportUrl,
+              typography_h1: settings.typography_h1,
+              typography_h2: settings.typography_h2,
+              typography_p: settings.typography_p,
+              typography_title: settings.typography_title,
+              typography_price: settings.typography_price,
+              typography_label: settings.typography_label,
+              typography_list: settings.typography_list,
             })
             .eq('id', settings.id)
         : await supabase
@@ -95,6 +144,13 @@ export const useAgencySettings = () => {
               icon_living_space: settings.iconLivingSpace,
               google_maps_api_key: settings.googleMapsApiKey,
               xml_import_url: settings.xmlImportUrl,
+              typography_h1: settings.typography_h1,
+              typography_h2: settings.typography_h2,
+              typography_p: settings.typography_p,
+              typography_title: settings.typography_title,
+              typography_price: settings.typography_price,
+              typography_label: settings.typography_label,
+              typography_list: settings.typography_list,
             });
 
       if (error) throw error;
@@ -135,6 +191,16 @@ export const useAgencySettings = () => {
     }));
   };
 
+  const handleTypographyChange = (element: string, field: keyof TypographySettings, value: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      [element]: {
+        ...prev[element],
+        [field]: value,
+      },
+    }));
+  };
+
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -166,6 +232,7 @@ export const useAgencySettings = () => {
     handleSubmit,
     handleChange,
     handleSelectChange,
+    handleTypographyChange,
     handleLogoUpload,
   };
 };
