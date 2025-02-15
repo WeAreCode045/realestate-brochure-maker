@@ -19,10 +19,10 @@ export function WebViewImageGrid({ images, settings }: WebViewImageGridProps) {
           <img
             src={image}
             alt={`Grid ${index + 1}`}
-            className="w-full aspect-video object-cover rounded-lg"
+            className="w-full aspect-video object-cover"
           />
           <div 
-            className="absolute inset-0 rounded-lg"
+            className="absolute inset-0"
             style={overlayStyle}
           />
         </div>

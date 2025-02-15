@@ -18,10 +18,10 @@ export function OverviewSection({ property, settings }: WebViewSectionProps) {
             <img
               src={property.featuredImage}
               alt={property.title}
-              className="w-full h-[400px] object-cover rounded-lg"
+              className="w-full h-[400px] object-cover"
             />
             <div 
-              className="absolute inset-0 rounded-lg mx-6"
+              className="absolute inset-0 mx-6"
               style={overlayStyle}
             />
           </div>
@@ -31,7 +31,7 @@ export function OverviewSection({ property, settings }: WebViewSectionProps) {
 
         <div className="relative mx-6 overflow-hidden">
           <div 
-            className="relative py-4 px-6 rounded-lg"
+            className="relative py-4 px-6"
             style={{ backgroundColor: settings?.primaryColor || '#40497A' }}
           >
             {/* Left fold */}
