@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PropertyData } from "@/types/property";
 import { useState } from "react";
@@ -51,36 +50,33 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
       id: 'overview',
       title: 'Overview',
       content: (
-        <div className="space-y-6">
+        <div className="relative h-full">
+          <div className="p-6 flex justify-between items-center">
+            {settings?.logoUrl && (
+              <img
+                src={settings.logoUrl}
+                alt="Agency Logo"
+                className="w-[35%] h-auto object-contain"
+              />
+            )}
+            <p className="text-2xl font-bold">{property.price}</p>
+          </div>
+
           {property.featuredImage && (
-            <div className="relative">
+            <div className="relative mt-[25%]">
               <img
                 src={property.featuredImage}
                 alt={property.title}
                 className="w-full aspect-video object-cover"
               />
               <div 
-                className="absolute bottom-0 left-0 right-0 h-[20%]"
-                style={{ backgroundColor: `${settings?.primaryColor}B3` }}
+                className="absolute bottom-0 left-0 right-0"
+                style={{ backgroundColor: settings?.primaryColor }}
               >
-                <div className="absolute bottom-0 w-full p-4 flex justify-between items-center">
-                  <h1 className="text-3xl font-bold text-white">{property.title}</h1>
-                  <p className="text-2xl text-white">{property.price}</p>
-                </div>
+                <h1 className="text-3xl font-bold text-white text-center py-2.5">
+                  {property.title}
+                </h1>
               </div>
-            </div>
-          )}
-
-          {property.gridImages && property.gridImages.length > 0 && (
-            <div className="grid grid-cols-4 gap-4 p-4">
-              {property.gridImages.slice(0, 4).map((image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`Grid ${index + 1}`}
-                  className="w-full aspect-video object-cover rounded-lg"
-                />
-              ))}
             </div>
           )}
         </div>
