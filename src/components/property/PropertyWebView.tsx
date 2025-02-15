@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PropertyData } from "@/types/property";
 import { useState } from "react";
@@ -5,7 +6,7 @@ import { useAgencySettings } from "@/hooks/useAgencySettings";
 import { PropertyDetails } from "./webview/PropertyDetails";
 import { ContactForm } from "./webview/ContactForm";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Share2, Printer } from "lucide-react";
+import { ChevronLeft, ChevronRight, Share2, Printer, Mail, Phone, MapPin } from "lucide-react";
 
 interface PropertyWebViewProps {
   property: PropertyData;
@@ -62,7 +63,6 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                 className="w-[200px] h-auto object-contain"
               />
             )}
-            <span className="text-2xl font-bold text-gray-600">BROCHURE</span>
           </div>
 
           <div className="space-y-4 mt-2">
@@ -75,6 +75,29 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                 />
               </div>
             )}
+
+            <div className="px-6 py-4">
+              <div className="flex flex-col items-center gap-4 text-xl">
+                {settings?.address && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-6 h-6" style={{ color: settings.primaryColor }} />
+                    <span>{settings.address}</span>
+                  </div>
+                )}
+                {settings?.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-6 h-6" style={{ color: settings.primaryColor }} />
+                    <span>{settings.phone}</span>
+                  </div>
+                )}
+                {settings?.email && (
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-6 h-6" style={{ color: settings.primaryColor }} />
+                    <span>{settings.email}</span>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {property.gridImages && property.gridImages.length > 0 && (
               <div className="grid grid-cols-4 gap-4 px-6">
