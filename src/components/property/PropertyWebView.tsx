@@ -73,6 +73,9 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                   src={property.featuredImage}
                   alt={property.title}
                   className="w-full h-[300px] object-cover rounded-lg"
+                  style={{
+                    clipPath: "polygon(0 0, 100% 0, 100% 85%, 0 100%)"
+                  }}
                 />
               </div>
             )}
