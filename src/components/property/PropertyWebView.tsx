@@ -66,13 +66,13 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
             </div>
           </div>
 
-          <div className="space-y-0 mt-[30px]">
+          <div className="space-y-4 mt-[30px]">
             {property.featuredImage && (
               <div className="relative px-6">
                 <img
                   src={property.featuredImage}
                   alt={property.title}
-                  className="w-full h-[300px] object-cover"
+                  className="w-full h-[300px] object-cover rounded-lg"
                   style={{
                     clipPath: "polygon(0 0, 100% 0, 100% 85%, 0 100%)"
                   }}
@@ -81,18 +81,13 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
             )}
 
             {property.gridImages && property.gridImages.length > 0 && (
-              <div className="grid grid-cols-4 gap-0 px-6 -mt-12">
+              <div className="grid grid-cols-4 gap-4 px-6">
                 {property.gridImages.slice(0, 4).map((image, index) => (
                   <img
                     key={index}
                     src={image}
                     alt={`Grid ${index + 1}`}
-                    className="w-full h-[180px] object-cover"
-                    style={{
-                      clipPath: index === 0 || index === 1 ? 
-                        "polygon(0 25%, 100% 25%, 100% 100%, 0 100%)" :
-                        "polygon(0 0, 100% 0, 100% 100%, 0 100%)"
-                    }}
+                    className="w-full aspect-video object-cover rounded-lg"
                   />
                 ))}
               </div>
