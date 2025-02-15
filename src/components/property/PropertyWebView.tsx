@@ -76,15 +76,6 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
               </div>
             )}
 
-            <div className="px-6 text-center">
-              <span 
-                className="text-[100px] font-bold uppercase"
-                style={{ color: settings?.primaryColor }}
-              >
-                In Beeld
-              </span>
-            </div>
-
             {property.gridImages && property.gridImages.length > 0 && (
               <div className="grid grid-cols-4 gap-4 px-6">
                 {property.gridImages.slice(0, 4).map((image, index) => (
@@ -97,6 +88,15 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                 ))}
               </div>
             )}
+
+            <div className="px-6 py-4 text-center">
+              <span 
+                className="text-[100px] font-bold uppercase"
+                style={{ color: settings?.secondaryColor }}
+              >
+                Brochure
+              </span>
+            </div>
           </div>
 
           <div 
