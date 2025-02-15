@@ -4,6 +4,7 @@ import { AgencySettings, Typography } from "@/types/agency";
 import { Json } from "@/integrations/supabase/types";
 
 interface AgencySettingsData {
+  name: string;
   agent_name: string;
   email: string;
   phone: string;
@@ -45,16 +46,15 @@ export const agencySettingsService = {
   },
 
   async updateSettings(id: string, data: AgencySettings) {
-    const typographyToJson = (typography: Typography): Json => {
-      return {
-        color: typography.color,
-        size: typography.size,
-        weight: typography.weight,
-        font: typography.font
-      } as Json;
-    };
+    const typographyToJson = (typography: Typography): Json => ({
+      color: typography.color,
+      size: typography.size,
+      weight: typography.weight,
+      font: typography.font
+    });
 
     const updateData: AgencySettingsData = {
+      name: data.name,
       agent_name: data.agentName,
       email: data.email,
       phone: data.phone,
@@ -88,19 +88,10 @@ export const agencySettingsService = {
     if (error) throw error;
   },
 
-  async createSettings(data: AgencySettingsData & { name: string }) {
+  async createSettings(data: AgencySettingsData) {
     const { error } = await supabase
       .from('agency_settings')
-      .insert({
-        ...data,
-        typography_h1: data.typography_h1 as Json,
-        typography_h2: data.typography_h2 as Json,
-        typography_p: data.typography_p as Json,
-        typography_title: data.typography_title as Json,
-        typography_price: data.typography_price as Json,
-        typography_label: data.typography_label as Json,
-        typography_list: data.typography_list as Json,
-      });
+      .insert(data);
 
     if (error) throw error;
   }

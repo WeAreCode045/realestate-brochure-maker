@@ -6,6 +6,7 @@ import { fetchAgencySettings } from "@/utils/fetchAgencySettings";
 import { defaultAgencySettings } from "@/utils/defaultAgencySettings";
 import { agencySettingsService } from "@/services/agencySettingsService";
 import { useLogoUpload } from "./useLogoUpload";
+import { Json } from "@/integrations/supabase/types";
 
 export const useAgencySettings = () => {
   const { toast } = useToast();
@@ -26,7 +27,15 @@ export const useAgencySettings = () => {
         logoUrl = await agencySettingsService.uploadLogo(file, filename);
       }
 
+      const typographyToJson = (typography: Typography): Json => ({
+        color: typography.color,
+        size: typography.size,
+        weight: typography.weight,
+        font: typography.font
+      });
+
       const updateData = {
+        name: settings.name,
         agent_name: settings.agentName,
         email: settings.email,
         phone: settings.phone,
@@ -43,19 +52,19 @@ export const useAgencySettings = () => {
         icon_living_space: settings.iconLivingSpace,
         google_maps_api_key: settings.googleMapsApiKey,
         xml_import_url: settings.xmlImportUrl,
-        typography_h1: settings.typography_h1 as Record<string, unknown>,
-        typography_h2: settings.typography_h2 as Record<string, unknown>,
-        typography_p: settings.typography_p as Record<string, unknown>,
-        typography_title: settings.typography_title as Record<string, unknown>,
-        typography_price: settings.typography_price as Record<string, unknown>,
-        typography_label: settings.typography_label as Record<string, unknown>,
-        typography_list: settings.typography_list as Record<string, unknown>,
+        typography_h1: typographyToJson(settings.typography_h1),
+        typography_h2: typographyToJson(settings.typography_h2),
+        typography_p: typographyToJson(settings.typography_p),
+        typography_title: typographyToJson(settings.typography_title),
+        typography_price: typographyToJson(settings.typography_price),
+        typography_label: typographyToJson(settings.typography_label),
+        typography_list: typographyToJson(settings.typography_list)
       };
 
       if (settings.id) {
-        await agencySettingsService.updateSettings(settings.id, updateData);
+        await agencySettingsService.updateSettings(settings.id, settings);
       } else {
-        await agencySettingsService.createSettings({ ...updateData, name: settings.name });
+        await agencySettingsService.createSettings(updateData);
       }
 
       toast({
