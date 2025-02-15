@@ -10,7 +10,7 @@ export function WebViewImageGrid({ images, settings }: WebViewImageGridProps) {
   if (!images || images.length === 0) return null;
 
   const overlayColor = settings?.secondaryColor || '#E2E8F0';
-  const overlayStyle = { backgroundColor: `${overlayColor}99` }; // 99 adds 60% opacity
+  const overlayStyle = { backgroundColor: `${overlayColor}BF` }; // BF adds 75% opacity
 
   return (
     <div className="grid grid-cols-4 gap-4 px-6">
