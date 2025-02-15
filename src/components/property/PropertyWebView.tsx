@@ -65,22 +65,37 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                 />
               )}
             </div>
-            <div className="flex flex-col items-end gap-2 text-sm">
+            <div className="flex flex-col items-end gap-2 text-xs">
               {settings?.address && (
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" style={{ color: settings.primaryColor }} />
+                  <div 
+                    className="w-6 h-6 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: settings?.secondaryColor }}
+                  >
+                    <MapPin className="w-3 h-3 text-white" />
+                  </div>
                   <span>{settings.address}</span>
                 </div>
               )}
               {settings?.phone && (
                 <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" style={{ color: settings.primaryColor }} />
+                  <div 
+                    className="w-6 h-6 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: settings?.secondaryColor }}
+                  >
+                    <Phone className="w-3 h-3 text-white" />
+                  </div>
                   <span>{settings.phone}</span>
                 </div>
               )}
               {settings?.email && (
                 <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" style={{ color: settings.primaryColor }} />
+                  <div 
+                    className="w-6 h-6 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: settings?.secondaryColor }}
+                  >
+                    <Mail className="w-3 h-3 text-white" />
+                  </div>
                   <span>{settings.email}</span>
                 </div>
               )}
