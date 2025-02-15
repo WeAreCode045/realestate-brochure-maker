@@ -66,13 +66,13 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
             </div>
           </div>
 
-          <div className="space-y-4 mt-[50px]">
+          <div className="space-y-4 mt-[30px]">
             {property.featuredImage && (
               <div className="relative px-6">
                 <img
                   src={property.featuredImage}
                   alt={property.title}
-                  className="w-full aspect-video object-cover rounded-lg"
+                  className="w-full h-[300px] object-cover rounded-lg"
                 />
               </div>
             )}
