@@ -55,17 +55,14 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
       content: (
         <div className="relative h-full">
           <div className="p-6 pb-2 flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              {settings?.logoUrl && (
-                <img
-                  src={settings.logoUrl}
-                  alt="Agency Logo"
-                  className="w-[200px] h-auto object-contain"
-                />
-              )}
-              <span className="text-xl font-semibold text-gray-600">BROCHURE</span>
-            </div>
-            <p className="text-sm font-semibold text-gray-600 uppercase">Te Koop</p>
+            {settings?.logoUrl && (
+              <img
+                src={settings.logoUrl}
+                alt="Agency Logo"
+                className="w-[200px] h-auto object-contain"
+              />
+            )}
+            <span className="text-2xl font-bold text-gray-600">BROCHURE</span>
           </div>
 
           <div className="space-y-4 mt-2">
