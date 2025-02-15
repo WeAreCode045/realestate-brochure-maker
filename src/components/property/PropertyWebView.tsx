@@ -81,16 +81,16 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
             )}
 
             {property.gridImages && property.gridImages.length > 0 && (
-              <div className="grid grid-cols-4 gap-0 px-6 -mt-4">
+              <div className="grid grid-cols-4 gap-0 px-6 -mt-12">
                 {property.gridImages.slice(0, 4).map((image, index) => (
                   <img
                     key={index}
                     src={image}
                     alt={`Grid ${index + 1}`}
-                    className="w-full aspect-video object-cover"
+                    className="w-full h-[180px] object-cover"
                     style={{
                       clipPath: index === 0 || index === 1 ? 
-                        "polygon(0 15%, 100% 15%, 100% 100%, 0 100%)" :
+                        "polygon(0 25%, 100% 25%, 100% 100%, 0 100%)" :
                         "polygon(0 0, 100% 0, 100% 100%, 0 100%)"
                     }}
                   />
