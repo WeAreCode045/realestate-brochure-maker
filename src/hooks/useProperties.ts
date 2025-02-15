@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { BrochureData } from '@/types/brochures';
+import { BrochureData, PropertyFeature } from '@/types/brochures';
 
 export function useProperties() {
   const [properties, setProperties] = useState<BrochureData[]>([]);
@@ -18,12 +18,15 @@ export function useProperties() {
 
         if (error) throw error;
         
-        // Transform the data to match BrochureData type
-        const transformedData = (data || []).map(item => ({
+        const transformedData: BrochureData[] = (data || []).map(item => ({
           ...item,
-          features: Array.isArray(item.features) ? item.features : [],
+          id: item.id || '',
+          features: Array.isArray(item.features) ? item.features.map((f: any) => ({
+            id: f.id || String(Math.random()),
+            description: f.description || ''
+          })) : [],
           images: Array.isArray(item.images) ? item.images : [],
-          floorplans: Array.isArray(item.floorplans) ? item.floorplans : [],
+          floorplans: Array.isArray(item.floorplans) ? item.floorplans : []
         }));
 
         setProperties(transformedData);
@@ -48,11 +51,15 @@ export function useProperties() {
 
       if (error) throw error;
       
-      const transformedData = (data || []).map(item => ({
+      const transformedData: BrochureData[] = (data || []).map(item => ({
         ...item,
-        features: Array.isArray(item.features) ? item.features : [],
+        id: item.id || '',
+        features: Array.isArray(item.features) ? item.features.map((f: any) => ({
+          id: f.id || String(Math.random()),
+          description: f.description || ''
+        })) : [],
         images: Array.isArray(item.images) ? item.images : [],
-        floorplans: Array.isArray(item.floorplans) ? item.floorplans : [],
+        floorplans: Array.isArray(item.floorplans) ? item.floorplans : []
       }));
 
       setProperties(transformedData);

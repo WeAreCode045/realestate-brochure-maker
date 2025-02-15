@@ -18,6 +18,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { generatePropertyPDF } from '../utils/pdfGenerator';
 import { PropertyData } from './PropertyForm';
 import { supabase } from '@/integrations/supabase/client';
+import { BrochureData } from '@/types/brochures';
 
 const items = [
   {
@@ -32,38 +33,39 @@ const items = [
   },
 ];
 
-interface StoredPropertyData {
-  id: string;
-  title: string;
-  address: string;
-  images: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-}
-
 export function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [savedBrochures, setSavedBrochures] = useState<StoredPropertyData[]>([]);
+  const [savedBrochures, setSavedBrochures] = useState<BrochureData[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchSavedBrochures = async () => {
       const { data, error } = await supabase
-        .from('brochures')
+        .from('properties')
         .select('*');
 
       if (error) {
-        console.error('Error fetching brochures:', error);
+        console.error('Error fetching properties:', error);
       } else {
-        setSavedBrochures(data);
+        const transformedData: BrochureData[] = (data || []).map(item => ({
+          ...item,
+          id: item.id || '',
+          features: Array.isArray(item.features) ? item.features.map((f: any) => ({
+            id: f.id || String(Math.random()),
+            description: f.description || ''
+          })) : [],
+          images: Array.isArray(item.images) ? item.images : [],
+          floorplans: Array.isArray(item.floorplans) ? item.floorplans : []
+        }));
+        setSavedBrochures(transformedData);
       }
     };
 
     fetchSavedBrochures();
   }, []);
 
-  const handleEditBrochure = (brochure: StoredPropertyData) => {
+  const handleEditBrochure = (brochure: BrochureData) => {
     navigate('/', {
       state: {
         editBrochure: {
@@ -74,7 +76,7 @@ export function AppSidebar() {
     });
   };
 
-  const handleGeneratePDF = async (brochure: StoredPropertyData) => {
+  const handleGeneratePDF = async (brochure: BrochureData) => {
     try {
       toast({
         title: "Genereren PDF",

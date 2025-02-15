@@ -1,4 +1,4 @@
-import { useState, useEffect, Key } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -8,61 +8,75 @@ import { PropertyDescription } from "./property/PropertyDescription";
 import { PropertyImages } from "./property/PropertyImages";
 import { supabase } from "@/integrations/supabase/client";
 import { fileToDataUrl } from '@/utils/file-utils';
+import { BrochureData, PropertyFeature } from '@/types/brochures';
 
-export interface PropertyFeature {
-  id: string;
-  description: string;
+export interface PropertyFormProps {
+  onSubmit?: (data: BrochureData) => void;
+  initialData?: BrochureData;
 }
 
-export interface PropertyData {
-  id: Key;
-  title: string;
-  price: string;
-  address: string;
-  bedrooms: string;
-  bathrooms: string;
-  sqft: string;
-  livingArea: string;
-  buildYear: string;
-  garages: string;
-  energyLabel: string;
-  description: string;
-  features: PropertyFeature[];
+export interface PropertyData extends Omit<BrochureData, 'images' | 'floorplans'> {
   images: File[];
   floorplans: File[];
-}
-
-interface PropertyFormProps {
-  onSubmit: (data: PropertyData) => void;
-  initialData?: PropertyData;
 }
 
 export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<PropertyData>({
-    id: "",
-    title: "",
-    price: "",
-    address: "",
-    bedrooms: "",
-    bathrooms: "",
-    sqft: "",
-    livingArea: "",
-    buildYear: "",
-    garages: "",
-    energyLabel: "",
-    description: "",
-    features: [],
+    id: initialData?.id || '',
+    title: initialData?.title || '',
+    price: initialData?.price || '',
+    address: initialData?.address || '',
+    bedrooms: initialData?.bedrooms || '',
+    bathrooms: initialData?.bathrooms || '',
+    sqft: initialData?.sqft || '',
+    livingArea: initialData?.livingArea || '',
+    buildYear: initialData?.buildYear || '',
+    garages: initialData?.garages || '',
+    energyLabel: initialData?.energyLabel || '',
+    description: initialData?.description || '',
+    features: initialData?.features || [],
     images: [],
-    floorplans: [],
+    floorplans: []
   });
 
-  useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const imageUrls = await Promise.all(formData.images.map(fileToDataUrl));
+      const floorplanUrls = await Promise.all(formData.floorplans.map(fileToDataUrl));
+
+      const propertyData: BrochureData = {
+        ...formData,
+        images: imageUrls,
+        floorplans: floorplanUrls,
+      };
+
+      const { error } = await supabase.from('properties').insert([propertyData]);
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Property saved successfully",
+      });
+
+      if (onSubmit) {
+        onSubmit(propertyData);
+      }
+    } catch (error) {
+      console.error('Error submitting property:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save property",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  }, [initialData]);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -120,42 +134,6 @@ export function PropertyForm({ onSubmit, initialData }: PropertyFormProps) {
         feature.id === id ? { ...feature, description } : feature
       ),
     }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const imageUrls = await Promise.all(formData.images.map(fileToDataUrl));
-      const floorplanUrls = await Promise.all(formData.floorplans.map(fileToDataUrl));
-
-      const propertyData = {
-        ...formData,
-        images: imageUrls,
-        floorplans: floorplanUrls,
-        features: formData.features || [],
-      };
-
-      const { error } = await supabase.from('properties').insert([propertyData]);
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Property saved successfully",
-      });
-
-      if (props.onSubmit) {
-        props.onSubmit(propertyData);
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save property",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (

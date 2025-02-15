@@ -1,8 +1,8 @@
 
 import { useProperties } from '@/hooks/useProperties';
-import { PropertyData, PropertyForm } from '@/components/PropertyForm';
+import { PropertyForm, PropertyData } from '@/components/PropertyForm';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { getImageUrl } from '@/utils/supabase-utils';
+import { BrochureData } from '@/types/brochures';
 
 export default function PropertiesPage() {
     const { properties, loading, error, refreshProperties } = useProperties();
@@ -15,7 +15,7 @@ export default function PropertiesPage() {
         return <div>Error loading properties: {error.message}</div>;
     }
 
-    const handlePropertySubmit = async (data: PropertyData) => {
+    const handlePropertySubmit = async (data: BrochureData) => {
         await refreshProperties();
     };
 
@@ -34,12 +34,12 @@ export default function PropertiesPage() {
     );
 }
 
-function PropertyCard({ property }: { property: PropertyData }) {
+function PropertyCard({ property }: { property: BrochureData }) {
     return (
         <div className="border rounded-lg p-4 shadow-sm">
             {property.images && property.images[0] && (
                 <img
-                    src={typeof property.images[0] === 'string' ? property.images[0] : URL.createObjectURL(property.images[0])}
+                    src={property.images[0]}
                     alt={property.title}
                     className="rounded-lg object-cover w-full h-48 mb-4"
                 />

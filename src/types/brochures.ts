@@ -1,12 +1,13 @@
 
+import { Json } from "@/integrations/supabase/types";
+
 export interface PropertyFeature {
   id: string;
-  name: string;
-  description?: string;
+  description: string;
 }
 
 export interface BrochureData {
-  id?: string;
+  id: string;  // Changed from optional to required
   title: string;
   address: string;
   price: string;
@@ -24,3 +25,5 @@ export interface BrochureData {
   created_at?: string;
   updated_at?: string;
 }
+
+export type StoredPropertyData = BrochureData;
