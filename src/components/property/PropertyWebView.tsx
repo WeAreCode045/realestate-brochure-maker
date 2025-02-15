@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PropertyData } from "@/types/property";
 import { useState } from "react";
@@ -44,6 +45,10 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
     window.print();
   };
 
+  const overlayStyle = { 
+    backgroundColor: `${settings?.primaryColor || '#40497A'}BF` // BF adds 75% opacity
+  };
+
   const sections = [
     {
       id: 'overview',
@@ -59,6 +64,10 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                   src={property.featuredImage}
                   alt={property.title}
                   className="w-full h-[400px] object-cover rounded-lg"
+                />
+                <div 
+                  className="absolute inset-0 rounded-lg mx-6"
+                  style={overlayStyle}
                 />
               </div>
             )}
