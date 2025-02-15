@@ -55,14 +55,36 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
       title: 'Overview',
       content: (
         <div className="relative h-full">
-          <div className="p-6 pb-2 flex justify-between items-center">
-            {settings?.logoUrl && (
-              <img
-                src={settings.logoUrl}
-                alt="Agency Logo"
-                className="w-[200px] h-auto object-contain"
-              />
-            )}
+          <div className="p-6 pb-2 flex justify-between items-start">
+            <div className="flex flex-col gap-2">
+              {settings?.logoUrl && (
+                <img
+                  src={settings.logoUrl}
+                  alt="Agency Logo"
+                  className="w-[200px] h-auto object-contain"
+                />
+              )}
+            </div>
+            <div className="flex flex-col items-end gap-2 text-sm">
+              {settings?.address && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" style={{ color: settings.primaryColor }} />
+                  <span>{settings.address}</span>
+                </div>
+              )}
+              {settings?.phone && (
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" style={{ color: settings.primaryColor }} />
+                  <span>{settings.phone}</span>
+                </div>
+              )}
+              {settings?.email && (
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" style={{ color: settings.primaryColor }} />
+                  <span>{settings.email}</span>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="space-y-4 mt-2">
@@ -76,38 +98,20 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
               </div>
             )}
 
-            <div className="px-6 py-4">
-              <div className="flex flex-col items-center gap-4 text-xl">
-                {settings?.address && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-6 h-6" style={{ color: settings.primaryColor }} />
-                    <span>{settings.address}</span>
-                  </div>
-                )}
-                {settings?.phone && (
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-6 h-6" style={{ color: settings.primaryColor }} />
-                    <span>{settings.phone}</span>
-                  </div>
-                )}
-                {settings?.email && (
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-6 h-6" style={{ color: settings.primaryColor }} />
-                    <span>{settings.email}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {property.gridImages && property.gridImages.length > 0 && (
               <div className="grid grid-cols-4 gap-4 px-6">
                 {property.gridImages.slice(0, 4).map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`Grid ${index + 1}`}
-                    className="w-full aspect-video object-cover rounded-lg"
-                  />
+                  <div key={index} className="relative">
+                    <img
+                      src={image}
+                      alt={`Grid ${index + 1}`}
+                      className="w-full aspect-video object-cover rounded-lg"
+                    />
+                    <div 
+                      className="absolute inset-0 rounded-lg"
+                      style={{ backgroundColor: `rgba(126, 105, 171, 0.6)` }}
+                    />
+                  </div>
                 ))}
               </div>
             )}
