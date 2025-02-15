@@ -11,7 +11,7 @@ export function OverviewSection({ property, settings }: WebViewSectionProps) {
       <div className="space-y-4 mt-2">
         {property.featuredImage && (
           <>
-            <div className="relative">
+            <div className="relative px-6">
               <img
                 src={property.featuredImage}
                 alt={property.title}
