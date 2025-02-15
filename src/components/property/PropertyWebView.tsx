@@ -52,7 +52,7 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
       title: 'Overview',
       content: (
         <div className="relative h-full">
-          <div className="p-6 flex justify-between items-center">
+          <div className="p-6 pb-2 flex justify-between items-center">
             {settings?.logoUrl && (
               <img
                 src={settings.logoUrl}
@@ -66,7 +66,7 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
             </div>
           </div>
 
-          <div className="space-y-4 mt-[30px]">
+          <div className="space-y-4 mt-2">
             {property.featuredImage && (
               <div className="relative px-6">
                 <img
