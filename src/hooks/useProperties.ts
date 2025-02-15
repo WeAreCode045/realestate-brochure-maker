@@ -1,75 +1,58 @@
 
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { BrochureData, PropertyFeature } from '@/types/brochures';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
-export function useProperties() {
-  const [properties, setProperties] = useState<BrochureData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+export const useProperties = () => {
+  const [properties, setProperties] = useState<any[]>([]);
+  const { toast } = useToast();
 
-  useEffect(() => {
-    async function fetchProperties() {
-      try {
-        const { data, error } = await supabase
-          .from('properties')
-          .select('*')
-          .order('created_at', { ascending: false });
+  const fetchProperties = async () => {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        
-        const transformedData: BrochureData[] = (data || []).map(item => ({
-          ...item,
-          id: item.id || '',
-          features: Array.isArray(item.features) ? item.features.map((f: any) => ({
-            id: f.id || String(Math.random()),
-            description: f.description || ''
-          })) : [],
-          images: Array.isArray(item.images) ? item.images : [],
-          floorplans: Array.isArray(item.floorplans) ? item.floorplans : []
-        }));
-
-        setProperties(transformedData);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('Failed to fetch properties'));
-        console.error('Error fetching properties:', err);
-      } finally {
-        setLoading(false);
-      }
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Er is een fout opgetreden bij het ophalen van de brochures",
+        variant: "destructive",
+      });
+      return;
     }
 
+    setProperties(data || []);
+  };
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('properties')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Er is een fout opgetreden bij het verwijderen van de brochure",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    await fetchProperties();
+    toast({
+      title: "Brochure verwijderd",
+      description: "De brochure is succesvol verwijderd",
+    });
+  };
+
+  useEffect(() => {
     fetchProperties();
   }, []);
 
-  const refreshProperties = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      
-      const transformedData: BrochureData[] = (data || []).map(item => ({
-        ...item,
-        id: item.id || '',
-        features: Array.isArray(item.features) ? item.features.map((f: any) => ({
-          id: f.id || String(Math.random()),
-          description: f.description || ''
-        })) : [],
-        images: Array.isArray(item.images) ? item.images : [],
-        floorplans: Array.isArray(item.floorplans) ? item.floorplans : []
-      }));
-
-      setProperties(transformedData);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch properties'));
-      console.error('Error refreshing properties:', err);
-    } finally {
-      setLoading(false);
-    }
+  return {
+    properties,
+    handleDelete,
   };
-
-  return { properties, loading, error, refreshProperties };
-}
+};
