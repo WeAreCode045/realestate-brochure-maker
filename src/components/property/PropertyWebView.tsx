@@ -1,5 +1,5 @@
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAgencySettings } from "@/hooks/useAgencySettings";
 import { WebViewFooter } from "./webview/WebViewFooter";
 import { OverviewSection } from "./webview/sections/OverviewSection";
@@ -59,6 +59,9 @@ export function PropertyWebView({ property, open, onOpenChange }: WebViewDialogP
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-[595px] h-[842px] p-0 overflow-hidden">
+          <DialogTitle className="sr-only">
+            {filteredSections[currentPage]?.title}
+          </DialogTitle>
           <div className="h-full flex flex-col">
             <div className="flex-1 overflow-y-auto">
               {filteredSections[currentPage]?.content}
@@ -79,6 +82,7 @@ export function PropertyWebView({ property, open, onOpenChange }: WebViewDialogP
       {selectedImage && (
         <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
           <DialogContent className="max-w-[90vw] max-h-[90vh]">
+            <DialogTitle className="sr-only">Image Preview</DialogTitle>
             <img
               src={selectedImage}
               alt="Large view"
