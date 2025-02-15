@@ -183,15 +183,17 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-          <WebViewHeader 
-            logoUrl={settings?.logoUrl} 
-            handleShare={handleShare}
-            title={filteredSections[currentPage]?.title}
-          />
+        <DialogContent className="max-w-[595px] h-[842px] p-0 overflow-hidden">
+          <div className="h-full flex flex-col">
+            <WebViewHeader 
+              logoUrl={settings?.logoUrl} 
+              handleShare={handleShare}
+              title={filteredSections[currentPage]?.title}
+            />
 
-          <div className="relative">
-            {filteredSections[currentPage]?.content}
+            <div className="flex-1 overflow-y-auto">
+              {filteredSections[currentPage]?.content}
+            </div>
 
             <div className="sticky bottom-0 w-full bg-white border-t p-4 flex items-center justify-between">
               <Button
