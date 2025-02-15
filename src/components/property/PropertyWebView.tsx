@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PropertyData } from "@/types/property";
 import { useState } from "react";
@@ -62,23 +63,39 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
             <p className="text-2xl font-bold">{property.price}</p>
           </div>
 
-          {property.featuredImage && (
-            <div className="relative mt-[25%]">
-              <img
-                src={property.featuredImage}
-                alt={property.title}
-                className="w-full aspect-video object-cover"
-              />
-              <div 
-                className="absolute bottom-0 left-0 right-0"
-                style={{ backgroundColor: settings?.primaryColor }}
-              >
-                <h1 className="text-3xl font-bold text-white text-center py-2.5">
-                  {property.title}
-                </h1>
+          <div className="space-y-4 mt-[50px]">
+            {property.featuredImage && (
+              <div className="relative">
+                <img
+                  src={property.featuredImage}
+                  alt={property.title}
+                  className="w-full aspect-video object-cover"
+                />
               </div>
-            </div>
-          )}
+            )}
+
+            {property.gridImages && property.gridImages.length > 0 && (
+              <div className="grid grid-cols-4 gap-4 px-6">
+                {property.gridImages.slice(0, 4).map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Grid ${index + 1}`}
+                    className="w-full aspect-video object-cover rounded-lg"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div 
+            className="absolute bottom-0 left-0 right-0"
+            style={{ backgroundColor: settings?.primaryColor }}
+          >
+            <h1 className="text-3xl font-bold text-white text-center py-2.5">
+              {property.title}
+            </h1>
+          </div>
         </div>
       )
     },
