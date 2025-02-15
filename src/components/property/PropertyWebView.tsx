@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PropertyData } from "@/types/property";
 import { useState } from "react";
@@ -209,30 +208,6 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
             </div>
 
             <div className="sticky bottom-0 w-full bg-white border-t p-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="text-sm font-medium text-gray-700">
-                  {filteredSections[currentPage]?.title}
-                </div>
-                <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="icon"
-                    onClick={() => handleShare('whatsapp')}
-                    title="Share on WhatsApp"
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="icon"
-                    onClick={handlePrint}
-                    title="Print Brochure"
-                  >
-                    <Printer className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
               <div className="flex items-center justify-between">
                 <Button
                   variant="outline"
@@ -243,15 +218,36 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
                   Previous
                 </Button>
 
-                <div className="flex gap-2">
-                  {filteredSections.map((section, index) => (
-                    <div
-                      key={section.id}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        index === currentPage ? 'bg-primary' : 'bg-gray-300'
-                      }`}
-                    />
-                  ))}
+                <div className="flex items-center gap-4">
+                  <div className="flex gap-2">
+                    {filteredSections.map((section, index) => (
+                      <div
+                        key={section.id}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentPage ? 'bg-primary' : 'bg-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      onClick={() => handleShare('whatsapp')}
+                      title="Share on WhatsApp"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      onClick={handlePrint}
+                      title="Print Brochure"
+                    >
+                      <Printer className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
 
                 <Button
