@@ -19,7 +19,7 @@ export function WebViewImageGrid({ images, settings }: WebViewImageGridProps) {
           <img
             src={image}
             alt={`Grid ${index + 1}`}
-            className="w-full aspect-square object-cover rounded-lg"
+            className="w-full aspect-[4/3] object-cover rounded-lg"
           />
           <div 
             className="absolute inset-0 rounded-lg"
