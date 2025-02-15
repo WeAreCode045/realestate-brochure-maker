@@ -31,15 +31,18 @@ export function WebViewFooter({
           Previous
         </Button>
 
-        <div className="flex gap-2">
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentPage ? 'bg-primary' : 'bg-gray-300'
-              }`}
-            />
-          ))}
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex gap-2">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  index === currentPage ? 'bg-primary' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-sm text-gray-500">Brochure</span>
         </div>
 
         <div className="flex items-center gap-2">
