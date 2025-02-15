@@ -3,11 +3,10 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PropertyData } from "@/types/property";
 import { useState } from "react";
 import { useAgencySettings } from "@/hooks/useAgencySettings";
-import { WebViewHeader } from "./webview/WebViewHeader";
 import { PropertyDetails } from "./webview/PropertyDetails";
 import { ContactForm } from "./webview/ContactForm";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Share2, Printer } from "lucide-react";
 
 interface PropertyWebViewProps {
   property: PropertyData;
@@ -44,6 +43,10 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
         window.location.href = `mailto:?subject=${encodeURIComponent(property.title)}&body=${encodeURIComponent(text + '\n\n' + shareUrl)}`;
         break;
     }
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   const sections: Section[] = [
@@ -201,45 +204,65 @@ export function PropertyWebView({ property, open, onOpenChange }: PropertyWebVie
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-[595px] h-[842px] p-0 overflow-hidden">
           <div className="h-full flex flex-col">
-            <WebViewHeader 
-              logoUrl={settings?.logoUrl} 
-              handleShare={handleShare}
-              title={filteredSections[currentPage]?.title}
-            />
-
             <div className="flex-1 overflow-y-auto">
               {filteredSections[currentPage]?.content}
             </div>
 
-            <div className="sticky bottom-0 w-full bg-white border-t p-4 flex items-center justify-between">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => prev - 1)}
-                disabled={currentPage === 0}
-              >
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Previous
-              </Button>
-
-              <div className="flex gap-2">
-                {filteredSections.map((section, index) => (
-                  <div
-                    key={section.id}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentPage ? 'bg-primary' : 'bg-gray-300'
-                    }`}
-                  />
-                ))}
+            <div className="sticky bottom-0 w-full bg-white border-t p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-sm font-medium text-gray-700">
+                  {filteredSections[currentPage]?.title}
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => handleShare('whatsapp')}
+                    title="Share on WhatsApp"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={handlePrint}
+                    title="Print Brochure"
+                  >
+                    <Printer className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
 
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => prev + 1)}
-                disabled={currentPage === filteredSections.length - 1}
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => prev - 1)}
+                  disabled={currentPage === 0}
+                >
+                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  Previous
+                </Button>
+
+                <div className="flex gap-2">
+                  {filteredSections.map((section, index) => (
+                    <div
+                      key={section.id}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentPage ? 'bg-primary' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => prev + 1)}
+                  disabled={currentPage === filteredSections.length - 1}
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
